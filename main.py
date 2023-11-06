@@ -8,21 +8,19 @@ from sklearn.metrics import confusion_matrix, accuracy_score
 
 def main():
     SCDandMCI, MCIandAD, SCDandAD = clean_data('CSFplasma.csv')
-    construct_svm(SCDandMCI)
+    construct_svm(MCIandAD)
+
+    #IDEA
+        #make a function for testing in general
+        #split data before creating 3 SVMs
+        #have objects for each of the three SVMs
+        #perform one against all approach
+        #result
     
 
     
 
 def clean_data(fileName):
-
-    #planning on creating SVMs 
-
-    #using data from different sources?
-    #using the same person for different categories?
-    #create SVM from scratch?
-    
-
-
     df = pd.read_csv(fileName)
 
     #baseline values are not needed as there is an initial entry already
