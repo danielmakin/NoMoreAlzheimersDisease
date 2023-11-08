@@ -7,20 +7,33 @@ from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix, accuracy_score
 
 def main():
-    SCDandMCI, MCIandAD, SCDandAD = clean_data('CSFplasma.csv')
-    construct_svm(MCIandAD)
+    SCD, MCI, AD = clean_data('CSFplasma.csv')
+    #construct_svm(MCIandAD)
 
     #IDEA
         #make a function for testing in general
         #split data before creating 3 SVMs
         #have objects for each of the three SVMs
-        #perform one against all approach
+        #perform one against one approach
         #result
     
 
     
 
 def clean_data(fileName):
+    '''
+        Reads a .cvs file and returns the SCD, MCI, and AD associated data.
+        
+        Args :
+            fileName (String): name of the .csv file (including extension)
+            
+        Returns :
+            SCD (list) : List of SCD patients and associated data
+            MCI (list) : List of MCI patients and associated data
+            AD (list) : List of AD patients and associated data
+    '''
+
+
     df = pd.read_csv(fileName)
 
     #baseline values are not needed as there is an initial entry already
@@ -41,16 +54,7 @@ def clean_data(fileName):
     SCD = df.loc[df["DX"] == "SCD"].drop_duplicates(subset= "RID")
     AD = df.loc[df["DX"] == "AD"].drop_duplicates(subset= "RID")
 
-    SCDandMCI = [SCD, MCI]
-    MCIandAD = [MCI, AD]
-    SCDandAD = [SCD, AD]
-    
-    #concatenate for SVM margins
-    SCDMCI = pd.concat(SCDandMCI)
-    MCIAD = pd.concat(MCIandAD)
-    SCDAD = pd.concat(SCDandAD)
-
-    return SCDMCI, MCIAD, SCDAD
+    return SCD, MCI, AD
 
 def construct_svm(dataset):
     #independant
@@ -59,11 +63,11 @@ def construct_svm(dataset):
     y = dataset.iloc[:, 1].values
     
     #split into testing and training sets (0.25 for testing)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0) # <---- MOVED OUT
 
     sc = StandardScaler()
     X_train = sc.fit_transform(X_train)
-    X_test = sc.fit_transform(X_test)
+    X_test = sc.fit_transform(X_test) # <---- MOVED OUT
 
     #fit the SVM to the training set
     classifier = SVC(kernel='rbf', random_state=0)
