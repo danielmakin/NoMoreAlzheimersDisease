@@ -11,18 +11,8 @@ def main():
     SCD, MCI, AD = clean_data('CSFplasma.csv')
     # get the test data required, leave training data
     SCD, MCI, AD, TestData = removeTestingData(SCD, MCI, AD)
-    # now make each svm
-
-    
-
-    #IDEA
-        #make a function for testing in general
-        #split data before creating 3 SVMs
-        #have objects for each of the three SVMs
-        #perform one against one approach
-        #result
-    
-
+    # perform the testing
+    doTesting(SCD, MCI, AD, TestData)
     
 
 def clean_data(fileName):
@@ -114,7 +104,8 @@ def construct_svm(DataSet1, DataSet2):
     
     
     # First the two dataframes should be combined
-    DataSet = np.concat([DataSet1, DataSet2])
+    DataSet = [DataSet1, DataSet2]
+    DataSet = pd.concat(DataSet)
     # Get data in the format required
     X, y = getXy(DataSet)
     # Train the classifier
@@ -124,8 +115,68 @@ def construct_svm(DataSet1, DataSet2):
     classifier = SVC(kernel='rbf', random_state=0)
     classifier.fit(X, y)
 
-    return classifier
+    return classifier, sc
     
+def doTesting(SCD, MCI, AD, TestData):
+    '''
+        Make the individual SVMs and test which class it belongs to using majority voting
+        
+        Args :
+            SCD, MCI, AD (DataFrames) : The inputted dataframes for training
+            TestData (DataFrame) : The dataframe used for testing
+    '''
+    # make the individual SVMs and keep the scalers for testing
+    SCDMCI, scalersm= construct_svm(SCD, MCI)
+    MCIAD, scalerma= construct_svm(MCI, AD)
+    SCDAD, scalersa = construct_svm(SCD, AD)
 
+    #perform each test
+    test1 = test(SCDMCI, scalersm, TestData)
+    test2 = test(MCIAD, scalerma, TestData)
+    test3 = test(SCDAD, scalersa, TestData)
+
+    # now to get the most common item in each index, leaving an item as unclassified if need be
+
+    commonResults = getMostCommonResult(test1, test2, test3)
+
+    print()
+    print(commonResults)
+
+def getMostCommonResult(pred1, pred2, pred3):
+    '''
+        This allows the collation of all the results
+        
+        Args :
+            pred1, pred2, pred3 (lists) : This gives the prediction from each individual SVM
+        Returns :
+            common (list) : This returns the most common classification
+    '''
+    common = ["-1" for i in range(len(pred1))]
+
+    # classify values that have atleast a 2 in a majority voting scheme
+    for i in range(len(pred1)):
+        if (pred1[i] == pred2[i]) or (pred1[i] == pred3[i]):
+            common[i] = pred1[i]
+        elif (pred2[i] == pred3[i]):
+            common[i] = pred2[i]
+    return common
+
+
+def test(classifier, scaler, TestData):
+    '''
+        Test the dataset with each individual SVM
+        
+        Args : 
+            classifier (SVM) : The Support Vector Machine used for this test
+            scaler (StandardScaler) : This allows the test data to be scaled to the same proportions as the test data
+            TestData (DataFrame) : The feature data
+    '''
+    # remove the labels, these will not be used
+    X, y = getXy(TestData)
+    # now perform the classification
+    X = scaler.fit_transform(X)
+    y_pred = classifier.predict(X)
+    # return the result of this transcation 
+    return y_pred
     
 main()
