@@ -81,9 +81,9 @@ def removeTestingData(SCD, MCI, AD, TestingFactor = 0.25):
     '''
 
     # remove the non-allowed data
-    SCD, TempSCD = train_test_split(SCD, test_size=TestingFactor, random_state=0)
-    MCI, TempMCI = train_test_split(MCI, test_size=TestingFactor, random_state=0)
-    AD, TempAD = train_test_split(AD, test_size=TestingFactor, random_state=0)
+    SCD, TempSCD = train_test_split(SCD, test_size=TestingFactor)
+    MCI, TempMCI = train_test_split(MCI, test_size=TestingFactor)
+    AD, TempAD = train_test_split(AD, test_size=TestingFactor)
 
     # concatenate the lists
     TempData = [TempSCD, TempMCI, TempAD]
@@ -99,7 +99,8 @@ def construct_svm(DataSet1, DataSet2):
         Args : 
             Datasets (DataFrame) : Two DataFrames that the SVM must be made upon
         Returns :
-            Classifier (SVC) : This is the margin that the data must be acted upon'''
+            Classifier (SVC) : This is the margin that the data must be acted upon
+    '''
     
     
     
@@ -126,21 +127,26 @@ def doTesting(SCD, MCI, AD, TestData):
             TestData (DataFrame) : The dataframe used for testing
     '''
     # make the individual SVMs and keep the scalers for testing
-    SCDMCI, scalersm= construct_svm(SCD, MCI)
-    MCIAD, scalerma= construct_svm(MCI, AD)
+
+    X_test, y_test = getXy(TestData)
+
+    SCDMCI, scalersm = construct_svm(SCD, MCI)
+    MCIAD, scalerma = construct_svm(MCI, AD)
     SCDAD, scalersa = construct_svm(SCD, AD)
 
     #perform each test
-    test1 = test(SCDMCI, scalersm, TestData)
-    test2 = test(MCIAD, scalerma, TestData)
-    test3 = test(SCDAD, scalersa, TestData)
+    test1 = test(SCDMCI, scalersm, X_test)
+    test2 = test(MCIAD, scalerma, X_test)
+    test3 = test(SCDAD, scalersa, X_test)
 
     # now to get the most common item in each index, leaving an item as unclassified if need be
 
     commonResults = getMostCommonResult(test1, test2, test3)
-
-    print()
-    print(commonResults)
+    
+    # construct a confusion matrix
+    cm = confusion_matrix(y_test, commonResults)
+    print(cm)
+    print(accuracy_score(y_test, commonResults))
 
 def getMostCommonResult(pred1, pred2, pred3):
     '''
@@ -161,18 +167,17 @@ def getMostCommonResult(pred1, pred2, pred3):
             common[i] = pred2[i]
     return common
 
-
-def test(classifier, scaler, TestData):
+def test(classifier, scaler, X):
     '''
         Test the dataset with each individual SVM
         
         Args : 
             classifier (SVM) : The Support Vector Machine used for this test
             scaler (StandardScaler) : This allows the test data to be scaled to the same proportions as the test data
-            TestData (DataFrame) : The feature data
+            X (DataFrame) : The feature data WITHOUT labels
+        Returns :
+            y_pred (list) : the predicted y-value for each item
     '''
-    # remove the labels, these will not be used
-    X, y = getXy(TestData)
     # now perform the classification
     X = scaler.fit_transform(X)
     y_pred = classifier.predict(X)
