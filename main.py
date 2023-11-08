@@ -158,6 +158,7 @@ def getMostCommonResult(pred1, pred2, pred3):
             common (list) : This returns the most common classification
     '''
     common = ["-1" for i in range(len(pred1))]
+    notClassified = 0
 
     # classify values that have atleast a 2 in a majority voting scheme
     for i in range(len(pred1)):
@@ -165,6 +166,12 @@ def getMostCommonResult(pred1, pred2, pred3):
             common[i] = pred1[i]
         elif (pred2[i] == pred3[i]):
             common[i] = pred2[i]
+        else:
+            notClassified += 1
+
+    # lets the user know if any items cannot be classified.
+    if notClassified != 0:
+        print("There were " + str(notClassified) + " item(s) unclassified.")
     return common
 
 def test(classifier, scaler, X):
