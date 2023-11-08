@@ -49,6 +49,15 @@ def clean_data(fileName):
     SCD = df.loc[df["DX"] == "SCD"].drop_duplicates(subset= "RID")
     AD = df.loc[df["DX"] == "AD"].drop_duplicates(subset= "RID")
 
+    #we need the same of every class to simply select the first ones
+    sizes = [len(SCD), len(MCI), len(AD)]
+    minAmount = min(sizes)
+    print(minAmount)
+
+    SCD = SCD[:minAmount]
+    MCI = MCI[:minAmount]
+    AD = AD[:minAmount]
+
     return SCD, MCI, AD
 
 def getXy(dataset):
