@@ -9,8 +9,10 @@ from sklearn.metrics import confusion_matrix, accuracy_score
 def main():
     # read the dataframe and clean
     SCD, MCI, AD = clean_data('CSFplasma.csv')
-    # get the test data required
+    # get the test data required, leave training data
     SCD, MCI, AD, TestData = removeTestingData(SCD, MCI, AD)
+    # now make each svm
+
     
 
     #IDEA
@@ -100,28 +102,30 @@ def removeTestingData(SCD, MCI, AD, TestingFactor = 0.25):
     # return required info
     return SCD, MCI, AD, Test
 
-def construct_svm(dataset):
-    # get data in format required
-    X, y = getXy(dataset)
+def construct_svm(DataSet1, DataSet2):
+    '''
+        Constructs an SVM with the datasets provided.
     
-    #split into testing and training sets (0.25 for testing)
-    X_train, X_test = train_test_split(X, test_size=0.25, random_state=0) # <---- MOVED OUT
-
+        Args : 
+            Datasets (DataFrame) : Two DataFrames that the SVM must be made upon
+        Returns :
+            Classifier (SVC) : This is the margin that the data must be acted upon'''
+    
+    
+    
+    # First the two dataframes should be combined
+    DataSet = np.concat([DataSet1, DataSet2])
+    # Get data in the format required
+    X, y = getXy(DataSet)
+    # Train the classifier
     sc = StandardScaler()
-    X_train = sc.fit_transform(X_train)
-    X_test = sc.fit_transform(X_test) # <---- MOVED OUT
-
-    #fit the SVM to the training set
+    X = sc.fit_transform(X)
+    # Fit to the classifier
     classifier = SVC(kernel='rbf', random_state=0)
-    classifier.fit(X_train, y_train)
+    classifier.fit(X, y)
 
-    #test the classifier
-    y_pred = classifier.predict(X_test)
-
-    #construct a confusion matrix
-    cm = confusion_matrix(y_test, y_pred)
-    print(cm)
-    print(accuracy_score(y_test, y_pred))
+    return classifier
+    
 
     
 main()
