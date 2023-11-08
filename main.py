@@ -7,8 +7,11 @@ from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix, accuracy_score
 
 def main():
+    # read the dataframe and clean
     SCD, MCI, AD = clean_data('CSFplasma.csv')
-    #construct_svm(MCIandAD)
+    # get the test data required
+    SCD, MCI, AD, TestData = removeTestingData(SCD, MCI, AD)
+    
 
     #IDEA
         #make a function for testing in general
@@ -56,14 +59,53 @@ def clean_data(fileName):
 
     return SCD, MCI, AD
 
-def construct_svm(dataset):
+def getXy(dataset):
+    '''
+        Returns the X (features) and y (label) associated with the dataframe
+        
+        Args :
+            dataset (dataframe)
+        Returns :
+            X (dataframe) : features
+            y (list) : labels
+    '''
     #independant
     X = dataset.iloc[:, [2, 3, 4, 5, 6]].values
     #dependant
     y = dataset.iloc[:, 1].values
+
+    return X, y
+
+def removeTestingData(SCD, MCI, AD, TestingFactor = 0.25):
+    '''
+        Function to remove the testing data from the DataFrames.
+        
+        Args : 
+            SCD, MCI, AD (DataFrame): Dataframes associated with each condition
+            TestingFactor (float) : Amount of data held back for testing (default = 0.25)
+        Returns :
+            SCD, MCI, AD (DataFrame): Dataframes with the testing data removed
+            Test (DataFrame): Testing Data
+    '''
+
+    # remove the non-allowed data
+    SCD, TempSCD = train_test_split(SCD, test_size=TestingFactor, random_state=0)
+    MCI, TempMCI = train_test_split(MCI, test_size=TestingFactor, random_state=0)
+    AD, TempAD = train_test_split(AD, test_size=TestingFactor, random_state=0)
+
+    # concatenate the lists
+    TempData = [TempSCD, TempMCI, TempAD]
+    Test = pd.concat(TempData)
+
+    # return required info
+    return SCD, MCI, AD, Test
+
+def construct_svm(dataset):
+    # get data in format required
+    X, y = getXy(dataset)
     
     #split into testing and training sets (0.25 for testing)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0) # <---- MOVED OUT
+    X_train, X_test = train_test_split(X, test_size=0.25, random_state=0) # <---- MOVED OUT
 
     sc = StandardScaler()
     X_train = sc.fit_transform(X_train)
