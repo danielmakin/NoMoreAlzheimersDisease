@@ -21,7 +21,6 @@ def clean_data(fileName):
         
         Args :
             fileName (String): name of the .csv file (including extension)
-            
         Returns :
             SCD (list) : List of SCD patients and associated data
             MCI (list) : List of MCI patients and associated data
