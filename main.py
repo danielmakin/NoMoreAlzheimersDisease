@@ -8,17 +8,17 @@ from sklearn.metrics import confusion_matrix, accuracy_score
 
 def main():
     # read the dataframe and clean
-    SCD, MCI, AD = clean_data('CSFplasma.csv')
+    SCD, MCI, AD = clean_data('Data/CSFplasma.csv')
     # get the test data required, leave training data
     SCD, MCI, AD, TestData = removeTestingData(SCD, MCI, AD)
     # perform the testing
     doTesting(SCD, MCI, AD, TestData)
-    
+
 
 def clean_data(fileName):
     '''
         Reads a .cvs file and returns the SCD, MCI, and AD associated data.
-        
+
         Args :
             fileName (String): name of the .csv file (including extension)
         Returns :
@@ -35,7 +35,7 @@ def clean_data(fileName):
 
     #get the relevant biomarkers
     df = df.loc[:, ['RID', 'DX', 'MMSE', 'AGE', 'PTAU', 'TAU', 'ABETA']]
-    
+
     df = df.replace("<8", "8")
     df = df.replace(">1700", "1700")
 
@@ -44,25 +44,25 @@ def clean_data(fileName):
     df = df.replace("Dementia", "AD")
 
     #remove duplicates in each subset
-    MCI = df.loc[df["DX"] == "MCI"].drop_duplicates(subset= "RID")
-    SCD = df.loc[df["DX"] == "SCD"].drop_duplicates(subset= "RID")
-    AD = df.loc[df["DX"] == "AD"].drop_duplicates(subset= "RID")
+    MCI = df.loc[df["DX"] == "MCI"]#.drop_duplicates(subset= "RID")
+    SCD = df.loc[df["DX"] == "SCD"]#.drop_duplicates(subset= "RID")
+    AD = df.loc[df["DX"] == "AD"]#.drop_duplicates(subset= "RID")
 
     #we need the same of every class to simply select the first ones
-    sizes = [len(SCD), len(MCI), len(AD)]
-    minAmount = min(sizes)
-    print(minAmount)
-
-    SCD = SCD[:minAmount]
-    MCI = MCI[:minAmount]
-    AD = AD[:minAmount]
+    # sizes = [len(SCD), len(MCI), len(AD)]
+    # minAmount = min(sizes)
+    # print(minAmount)
+    #
+    # SCD = SCD[:minAmount]
+    # MCI = MCI[:minAmount]
+    # AD = AD[:minAmount]
 
     return SCD, MCI, AD
 
 def getXy(dataset):
     '''
         Returns the X (features) and y (label) associated with the dataframe
-        
+
         Args :
             dataset (dataframe)
         Returns :
@@ -79,8 +79,8 @@ def getXy(dataset):
 def removeTestingData(SCD, MCI, AD, TestingFactor = 0.25):
     '''
         Function to remove the testing data from the DataFrames.
-        
-        Args : 
+
+        Args :
             SCD, MCI, AD (DataFrame): Dataframes associated with each condition
             TestingFactor (float) : Amount of data held back for testing (default = 0.25)
         Returns :
@@ -103,15 +103,15 @@ def removeTestingData(SCD, MCI, AD, TestingFactor = 0.25):
 def construct_svm(DataSet1, DataSet2):
     '''
         Constructs an SVM with the datasets provided.
-    
-        Args : 
+
+        Args :
             Datasets (DataFrame) : Two DataFrames that the SVM must be made upon
         Returns :
             Classifier (SVC) : This is the margin that the data must be acted upon
     '''
-    
-    
-    
+
+
+
     # First the two dataframes should be combined
     DataSet = [DataSet1, DataSet2]
     DataSet = pd.concat(DataSet)
@@ -125,11 +125,11 @@ def construct_svm(DataSet1, DataSet2):
     classifier.fit(X, y)
 
     return classifier, sc
-    
+
 def doTesting(SCD, MCI, AD, TestData):
     '''
         Make the individual SVMs and test which class it belongs to using majority voting
-        
+
         Args :
             SCD, MCI, AD (DataFrames) : The inputted dataframes for training
             TestData (DataFrame) : The dataframe used for testing
@@ -150,7 +150,7 @@ def doTesting(SCD, MCI, AD, TestData):
     # now to get the most common item in each index, leaving an item as unclassified if need be
 
     commonResults = getMostCommonResult(test1, test2, test3)
-    
+
     # construct a confusion matrix
     cm = confusion_matrix(y_test, commonResults)
     print(cm)
@@ -159,7 +159,7 @@ def doTesting(SCD, MCI, AD, TestData):
 def getMostCommonResult(pred1, pred2, pred3):
     '''
         This allows the collation of all the results
-        
+
         Args :
             pred1, pred2, pred3 (lists) : This gives the prediction from each individual SVM
         Returns :
@@ -185,8 +185,8 @@ def getMostCommonResult(pred1, pred2, pred3):
 def test(classifier, scaler, X):
     '''
         Test the dataset with each individual SVM
-        
-        Args : 
+
+        Args :
             classifier (SVM) : The Support Vector Machine used for this test
             scaler (StandardScaler) : This allows the test data to be scaled to the same proportions as the test data
             X (DataFrame) : The feature data WITHOUT labels
@@ -196,7 +196,7 @@ def test(classifier, scaler, X):
     # now perform the classification
     X = scaler.fit_transform(X)
     y_pred = classifier.predict(X)
-    # return the result of this transcation 
+    # return the result of this transcation
     return y_pred
-    
+
 main()
