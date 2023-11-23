@@ -180,7 +180,6 @@ def doTesting(SCD, MCI, AD, TestData):
 
     # Now colalate the results together taking the two classifiers into account
     results = perform_bdt(test1, test2)
-    print(results)
 
     # construct a confusion matrix
     cm = confusion_matrix(y_test, results)
