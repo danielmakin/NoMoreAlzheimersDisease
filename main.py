@@ -1,3 +1,16 @@
+''''Approach :  Make a Binary DT Classifier which uses mostly the same logic as the last iteration
+                This requires preprocessing the classes to make two the same for the first classifier
+                The Current idea :
+                            ALL
+                           /   \
+                          /     \
+                        SCD   MCI,AD
+                                /\
+                               /  \
+                             MCI  AD
+                '''
+
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -43,19 +56,10 @@ def clean_data(fileName):
     df = df.replace("CN", "SCD")
     df = df.replace("Dementia", "AD")
 
-    #remove duplicates in each subset
-    MCI = df.loc[df["DX"] == "MCI"]#.drop_duplicates(subset= "RID")
-    SCD = df.loc[df["DX"] == "SCD"]#.drop_duplicates(subset= "RID")
-    AD = df.loc[df["DX"] == "AD"]#.drop_duplicates(subset= "RID")
-
-    #we need the same of every class to simply select the first ones
-    # sizes = [len(SCD), len(MCI), len(AD)]
-    # minAmount = min(sizes)
-    # print(minAmount)
-    #
-    # SCD = SCD[:minAmount]
-    # MCI = MCI[:minAmount]
-    # AD = AD[:minAmount]
+    #get items from each class
+    MCI = df.loc[df["DX"] == "MCI"]
+    SCD = df.loc[df["DX"] == "SCD"]
+    AD = df.loc[df["DX"] == "AD"]
 
     return SCD, MCI, AD
 
@@ -128,33 +132,39 @@ def construct_svm(DataSet1, DataSet2):
 
 def doTesting(SCD, MCI, AD, TestData):
     '''
-        Make the individual SVMs and test which class it belongs to using majority voting
+        Make the individual SVMs and test which class it belongs to using Binary Decision Tree Classification
 
         Args :
             SCD, MCI, AD (DataFrames) : The inputted dataframes for training
             TestData (DataFrame) : The dataframe used for testing
     '''
-    # make the individual SVMs and keep the scalers for testing
-
+    # seperate the labels and the data features
     X_test, y_test = getXy(TestData)
 
-    SCDMCI, scalersm = construct_svm(SCD, MCI)
-    MCIAD, scalerma = construct_svm(MCI, AD)
-    SCDAD, scalersa = construct_svm(SCD, AD)
+    # Concatenate MCI
+    MCIoAD = [MCI, AD]
+    MCIoAD = pd.concat(MCIoAD)
+    # Map to the same class
+    MCIoAD = MCIoAD.replace("MCI", "MCIoAD").replace("AD", "MCIoAD")
 
-    #perform each test
-    test1 = test(SCDMCI, scalersm, X_test)
-    test2 = test(MCIAD, scalerma, X_test)
-    test3 = test(SCDAD, scalersa, X_test)
+    # Test to perform the first step of the DT
+    SCDMCIAD, scalersm = construct_svm(SCD, MCIoAD)
+
+    # Perform the test for the first level of BDT
+    test1 = test(SCDMCIAD, scalersm, X_test)
+
+    print(test1)
+    print("--------------------------------------------------------")
+    print(y_test)
 
     # now to get the most common item in each index, leaving an item as unclassified if need be
 
-    commonResults = getMostCommonResult(test1, test2, test3)
+    # commonResults = getMostCommonResult(test1, test2, test3)
 
     # construct a confusion matrix
-    cm = confusion_matrix(y_test, commonResults)
+    cm = confusion_matrix(y_test, test1)
     print(cm)
-    print(accuracy_score(y_test, commonResults))
+    print(accuracy_score(y_test, test1))
 
 def getMostCommonResult(pred1, pred2, pred3):
     '''
