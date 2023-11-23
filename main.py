@@ -18,14 +18,20 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix, accuracy_score
+from timeit import default_timer as timer
 
 def main():
+    start = timer()
     # read the dataframe and clean
     SCD, MCI, AD = clean_data('Data/CSFplasma.csv')
     # get the test data required, leave training data
     SCD, MCI, AD, TestData = removeTestingData(SCD, MCI, AD)
     # perform the testing
     doTesting(SCD, MCI, AD, TestData)
+
+    # Print out the time taken
+    end = timer()
+    print("Time Taken : " + str(end-start))
 
 
 def clean_data(fileName):
