@@ -130,6 +130,25 @@ def construct_svm(DataSet1, DataSet2):
 
     return classifier, sc
 
+def perform_bdt(SCDoMCIAD, MCIoAD):
+    '''This collates the two levels of the BDT to produce a single class for each data item
+    
+    Args : 
+        SCDoMCIAD, MCIoAD (List) : The inputted dataframes to collate.
+    Returns :
+        Results (List): The full result of the BDT'''
+    
+    Results = []
+    
+    for i in range(len(SCDoMCIAD)):
+        if SCDoMCIAD[i] == 'SCD':
+            Results.append('SCD')
+        else:
+            # Adds the result of the second level
+            Results.append(MCIoAD[i])
+
+    return Results
+
 def doTesting(SCD, MCI, AD, TestData):
     '''
         Make the individual SVMs and test which class it belongs to using Binary Decision Tree Classification
@@ -148,23 +167,25 @@ def doTesting(SCD, MCI, AD, TestData):
     MCIoAD = MCIoAD.replace("MCI", "MCIoAD").replace("AD", "MCIoAD")
 
     # Test to perform the first step of the DT
-    SCDMCIAD, scalersm = construct_svm(SCD, MCIoAD)
+    SCDMCIAD, scalersma = construct_svm(SCD, MCIoAD)
+    # SVM for the second level of the BDT
+    MCIAD, scalarma = construct_svm(MCI, AD)
 
     # Perform the test for the first level of BDT
-    test1 = test(SCDMCIAD, scalersm, X_test)
+    test1 = test(SCDMCIAD, scalersma, X_test)
 
-    print(test1)
-    print("--------------------------------------------------------")
-    print(y_test)
+    # Now run entire set through the MCI, AD classifier. 
+    # However, only the non-SCD items in the previous test will be used
+    test2 = test(MCIAD, scalarma, X_test)
 
-    # now to get the most common item in each index, leaving an item as unclassified if need be
-
-    # commonResults = getMostCommonResult(test1, test2, test3)
+    # Now colalate the results together taking the two classifiers into account
+    results = perform_bdt(test1, test2)
+    print(results)
 
     # construct a confusion matrix
-    cm = confusion_matrix(y_test, test1)
+    cm = confusion_matrix(y_test, results)
     print(cm)
-    print(accuracy_score(y_test, test1))
+    print(accuracy_score(y_test, results))
 
 def getMostCommonResult(pred1, pred2, pred3):
     '''
