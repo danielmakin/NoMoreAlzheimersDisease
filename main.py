@@ -23,7 +23,9 @@ from timeit import default_timer as timer
 def main():
     start = timer()
     # read the dataframe and clean
-    SCD, MCI, AD = clean_data('Data/CSFplasma.csv')
+    SCD, MCI, AD = clean_data('Data/ADNIMERGE_15Jun2023.csv')
+    # SCD, MCI, AD = clean_data('Data/CSFPlasma.csv')
+    
     # get the test data required, leave training data
     SCD, MCI, AD, TestData = removeTestingData(SCD, MCI, AD)
     # perform the testing
@@ -55,8 +57,12 @@ def clean_data(fileName):
     #get the relevant biomarkers
     df = df.loc[:, ['RID', 'DX', 'MMSE', 'AGE', 'PTAU', 'TAU', 'ABETA']]
 
-    df = df.replace("<8", "8")
-    df = df.replace(">1700", "1700")
+    # Removes all the '<' or '>' signs from the data
+    regex_pattern = r'[<>](\d+)'
+
+    # This applies to all columns
+    df = df.apply(lambda col: col.astype(str).str.replace(regex_pattern, r'\1', regex=True))
+    df = df.replace('nan', np.nan).dropna()
 
     #change to required format
     df = df.replace("CN", "SCD")
@@ -66,6 +72,11 @@ def clean_data(fileName):
     MCI = df.loc[df["DX"] == "MCI"]
     SCD = df.loc[df["DX"] == "SCD"]
     AD = df.loc[df["DX"] == "AD"]
+
+    # Reset the indexes
+    df = df.reset_index()
+
+    print(df)
 
     return SCD, MCI, AD
 
@@ -190,7 +201,7 @@ def doTesting(SCD, MCI, AD, TestData):
     # construct a confusion matrix
     cm = confusion_matrix(y_test, results)
     print(cm)
-    print(accuracy_score(y_test, results))
+    print("Accuracy : " + str(accuracy_score(y_test, results)))
 
 def getMostCommonResult(pred1, pred2, pred3):
     '''
