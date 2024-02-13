@@ -100,5 +100,3 @@ class visual_display:
             axes[i].set_xlabel('Classification')
 
         plt.show()
-
-             
