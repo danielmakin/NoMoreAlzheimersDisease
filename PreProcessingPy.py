@@ -4,13 +4,15 @@ import pandas as pd
 
 class pp:
     def __init__(self, files, merge_fields, fields_needed):
+        ## MAY HAVE ISSUE IF THERE IS VISCODE/2 ETC.
+
         # Read the first file
         self.df = pd.read_csv(files[0])
 
         # Merge in the other files, ignoring the original as it has already been read
         for i in range(1, len(files)):
             temp_df = pd.read_csv(files[i])
-            self.df = pd.merge(self.df, temp_df, on=merge_fields, how="inner")#
+            self.df = pd.merge(self.df, temp_df, on=merge_fields, how="inner")
         # Select the Fields that are needed
         self.df = self.df[fields_needed]
     
@@ -20,10 +22,10 @@ class pp:
         self.df['AB4240'] = self.df[columns[0]] / self.df[columns[1]]
         self.df = self.df.drop([columns[0], columns[1]], axis=1)
 
-    def add_adni_merge_data(self):
+    def add_adni_merge_data(self, fields_to_keep):
         '''This adds the data from the ADNI-MERGE file. i.e. DX, MMSE, AGE, PT_EDUCAT'''
         am = pd.read_csv('Data/ADNIMERGE_15Jun2023.csv')
-        self.df = pd.merge(self.df, am, on=['RID', 'VISCODE'], how='inner')[['RID', 'VISCODE', 'DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'PTEDUCAT', 'AGE']]
+        self.df = pd.merge(self.df, am, on=['RID', 'VISCODE'], how='inner')[fields_to_keep]
 
     def clean_data(self):
         '''Removes the NULL values and Makes DX a Manageable Name'''
