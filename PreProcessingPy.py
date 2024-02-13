@@ -1,4 +1,5 @@
 '''This is a Pre-Processing Python file to make the PreProcessing.ipynb file cleaner'''
+from matplotlib import pyplot as plt
 import pandas as pd
 
 class pp:
@@ -30,12 +31,36 @@ class pp:
         self.df = self.df.replace("CN", "SCD").replace("Dementia", "AD").dropna()
 
     def remove_outliers(self, columns_to_clean):
-        '''This removes the outliers from the specified Columns, returns the amount of records removed'''
-        to_remove = []
 
-        for field in range(columns_to_clean):
-            p25 = self.df[field].quantile(0.25)
-            p75 = self.df[field].quantile(0.75)
+        # Break up each class
+            # Do for each field
+            # Remove records within each array
+            # Re-Combine
+
+        '''This removes the outliers from the specified Columns, returns the amount of records removed'''
+        SCD = self.df.loc[self.df["DX"] == "SCD"].reindex()
+        MCI = self.df.loc[self.df["DX"] == "MCI"].reindex()
+        AD = self.df.loc[self.df["DX"] == "AD"].reindex()
+
+        # Initialise to_remove
+
+        to_remove = self.__remove_outliers_class(SCD, columns_to_clean)
+        print(to_remove)
+        SCD.drop(to_remove, inplace=True)
+        to_remove = self.__remove_outliers_class(MCI, columns_to_clean)
+        MCI.drop(to_remove, inplace=True)
+        to_remove = self.__remove_outliers_class(AD, columns_to_clean)
+        AD.drop(to_remove, inplace=True)
+
+        # Now Recombine and reindex to ensure uniqueness
+        df = [SCD, MCI, AD]
+        self.df = pd.concat(df).reindex()
+    
+    def __remove_outliers_class(self, df, columns_to_clean):
+        to_remove = []
+        for i in range(len(columns_to_clean)):
+            p25 = df[columns_to_clean[i]].quantile(0.25)
+            p75 = df[columns_to_clean[i]].quantile(0.75)
 
             iqr = p75 - p25
 
@@ -43,12 +68,35 @@ class pp:
             upper_limit = p75 + 1.5 * iqr
             lower_limit = p25 - 1.5 * iqr
             
-            u = self.df[self.df[field] > upper_limit]
-            l = self.df[self.df[field] < lower_limit]
+            u = df[df[columns_to_clean[i]] > upper_limit]
+            l = df[df[columns_to_clean[i]] < lower_limit]
 
             # Making it a set removes duplicates
-            to_remove = to_remove + (list(u['RID']) + list(l['RID']))
+            to_remove = to_remove + (list(u.index) + list(l.index))
+
         # Now make it a set to remove duplicates
         to_remove = list(set(to_remove))
-        return len(to_remove)
+
+        return to_remove
+
+    
+class visual_display:
+    def __init__(self, df):
+        self.SCD = df.loc[df["DX"] == "SCD"]
+        self.MCI = df.loc[df["DX"] == "MCI"]
+        self.AD = df.loc[df["DX"] == "AD"]
+
+    def display(self, fields):
+        fig, axes = plt.subplots(nrows=1, ncols=len(fields), figsize=(20, 4))
+
+        for i in range(len(fields)):
+            box_plot = [list(self.SCD[fields[i]]), list(self.MCI[fields[i]]), list(self.AD[fields[i]])]
+
+            axes[i].boxplot(box_plot, showfliers=True, labels=['SCD', 'MCI', 'AD'])
+            axes[i].set_title(fields[i] + ' values on BoxPlots')
+            axes[i].set_ylabel(fields[i] + ' Value')
+            axes[i].set_xlabel('Classification')
+
+        plt.show()
+
              
