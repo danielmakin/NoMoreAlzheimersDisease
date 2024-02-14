@@ -1,5 +1,6 @@
 '''This is a Pre-Processing Python file to make the PreProcessing.ipynb file cleaner'''
 from matplotlib import pyplot as plt
+import numpy as np
 import pandas as pd
 
 class pp:
@@ -83,6 +84,7 @@ class pp:
 
     
 class visual_display:
+
     def __init__(self, df):
         self.SCD = df.loc[df["DX"] == "SCD"]
         self.MCI = df.loc[df["DX"] == "MCI"]
@@ -100,3 +102,50 @@ class visual_display:
             axes[i].set_xlabel('Classification')
 
         plt.show()
+
+
+class post_processing_display:
+
+    def __init__(self, file_names):
+        self.before_dfs = []
+        self.after_dfs = []
+        # This should read all of the data frames needed
+        for i in range(len(file_names)):
+            temp_before_df = pd.read_csv('Data/PreProcessedData/Outliers/' + file_names[i])
+            temp_after_df = pd.read_csv('Data/PreProcessedData/OutliersRemoved/' + file_names[i])
+            self.before_dfs.append(temp_before_df)
+            self.after_dfs.append(temp_after_df)
+
+    def display_results(self):
+        # Split into arrays where each item has a list from a class from a file
+        SCD, MCI, AD = [], [], []
+        for i in range(len(self.before_dfs)):
+            SCD.append(self.before_dfs[i].loc[self.before_dfs[i]["DX"] == "SCD"])
+            SCD.append(self.after_dfs[i].loc[self.after_dfs[i]["DX"] == "SCD"])
+
+            MCI.append(self.before_dfs[i].loc[self.before_dfs[i]["DX"] == "MCI"])
+            MCI.append(self.after_dfs[i].loc[self.after_dfs[i]["DX"] == "MCI"])
+
+            AD.append(self.before_dfs[i].loc[self.before_dfs[i]["DX"] == "AD"])
+            AD.append(self.after_dfs[i].loc[self.after_dfs[i]["DX"] == "AD"])
+
+        fig, axes = plt.subplots(nrows=1, ncols=int(len(SCD) / 2), figsize=(20, 4))
+
+        # Now display what this means
+        for i in range(int(len(SCD) / 2)):
+            # Plot the two distributions next to each other to see changes
+
+            r = np.arange(3)
+            width = 0.25
+            axes[i].bar(r, [len(SCD[2*i]), len(MCI[2*i]), len(AD[2*i])], label='Before', width=width, edgecolor = 'black')
+            axes[i].bar(r+width, [len(SCD[2*i + 1]), len(MCI[2*i + 1]), len(AD[2*i + 1])], label='After', width=width, edgecolor = 'black')
+            axes[i].set_title("Distribution of Classes " + str(i + 1))
+            axes[i].set_ylabel('Class Size')
+            axes[i].set_xticks(r + width/2, ['SCD','MCI','AD'])
+            axes[i].set_xlabel('Classification')
+            
+        plt.legend()
+        plt.show()
+
+
+    
