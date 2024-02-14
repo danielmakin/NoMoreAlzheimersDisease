@@ -34,11 +34,6 @@ class pp:
 
     def remove_outliers(self, columns_to_clean):
 
-        # Break up each class
-            # Do for each field
-            # Remove records within each array
-            # Re-Combine
-
         '''This removes the outliers from the specified Columns, returns the amount of records removed'''
         SCD = self.df.loc[self.df["DX"] == "SCD"].reindex()
         MCI = self.df.loc[self.df["DX"] == "MCI"].reindex()
@@ -80,6 +75,11 @@ class pp:
         to_remove = list(set(to_remove))
 
         return to_remove
+    
+    def write_to_csv(self, file_name):
+        '''Writes a dataframe to the specified .csv file'''
+        # Assume this is a pre-processing file
+        self.df.to_csv("Data/PreProcessedData/" + file_name, index=False)
 
     
 class visual_display:
