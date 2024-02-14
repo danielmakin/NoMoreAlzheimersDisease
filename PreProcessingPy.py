@@ -139,7 +139,7 @@ class post_processing_display:
             width = 0.25
             axes[i].bar(r, [len(SCD[2*i]), len(MCI[2*i]), len(AD[2*i])], label='Before', width=width, edgecolor = 'black')
             axes[i].bar(r+width, [len(SCD[2*i + 1]), len(MCI[2*i + 1]), len(AD[2*i + 1])], label='After', width=width, edgecolor = 'black')
-            axes[i].set_title("Distribution of Classes " + str(i + 1))
+            axes[i].set_title("Distribution of Classes in File " + str(i + 1))
             axes[i].set_ylabel('Class Size')
             axes[i].set_xticks(r + width/2, ['SCD','MCI','AD'])
             axes[i].set_xlabel('Classification')
