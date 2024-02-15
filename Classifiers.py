@@ -1,17 +1,47 @@
+from abc import abstractmethod
 from matplotlib import pyplot as plt
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import recall_score, accuracy_score
+from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.svm import SVC
+from tabulate import tabulate
 
-class MySVM:
+class MyClassifier:
+    def getXy(self, df):
+        '''
+        Seperate the label from the feature data.
+        
+        Args : 
+            df (DataFrame) : The data to be seperated
+        Returns :
+            X (DataFrame) : The feature data.
+            y (list) : The labels associated.'''
+        
+        # Independant
+        X = df.drop("DX", axis=1).values
+        # Dependant
+        y = df["DX"].values
+
+        return X, y
+    @abstractmethod
+    def hyper_parameter_selection(self, verbose=0):
+        pass
+    @abstractmethod
+    def test(self, metrics):
+        pass
+
+
+
+
+class MySVM(MyClassifier):
     def __init__(self, file_name, fields_to_drop):
+        super().__init__()
         self.df = pd.read_csv(file_name).drop(fields_to_drop, axis=1)
     
     def hyper_parameter_selection(self, verbose=0):
         self.svm = SVC()
-        X, y = self.__getXy(self.df)
+        X, y = super().getXy(self.df)
 
         # Split the data, this may need to be fixed later, the Test data will be needed after
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -38,29 +68,13 @@ class MySVM:
 
         self.grid_search = grid_search
 
-    def __getXy(self, df):
-        '''
-        Seperate the label from the feature data.
-        
-        Args : 
-            df (DataFrame) : The data to be seperated
-        Returns :
-            X (DataFrame) : The feature data.
-            y (list) : The labels associated.'''
-        
-        # Independant
-        X = df.drop("DX", axis=1).values
-        # Dependant
-        y = df["DX"].values
+        # Now Display in the Notebook the output of these results
 
-        return X, y
-    
-    def display_hyperparameter_results(self):
         display = main_results_display()
 
-        display.display_hyperparameter_results(self.grid_search, self.parameters, self.param_grid)
+        display.display_hyperparameter_results(grid_search, self.parameters, self.param_grid)
 
-    def test_hyper_parameters(self):
+    def test(self, metrics=False):
         
         # Creates a SVC object with the best parameters selected.
         test_classifier = SVC(
@@ -75,41 +89,26 @@ class MySVM:
 
         y_testresult = test_classifier.predict(self.X_test)
 
-        print("Accuracy is " + str(accuracy_score(self.y_test, y_testresult)))
-        print("Recall was " + str(recall_score(self.y_test, y_testresult, average=None)))
+        # Now display the metrics if needed
+        if metrics == True:
+            display = main_results_display()
+            display.display_class_results_text(y_testresult, self.y_test)
 
-class MyRF:
+class MyRF(MyClassifier):
     def __init__(self, file_name, fields_to_drop):
         self.df = pd.read_csv(file_name).drop(fields_to_drop, axis=1)
-
-    def __getXy(self, df):
-        '''
-        Seperate the label from the feature data.
-        
-        Args : 
-            df (DataFrame) : The data to be seperated
-        Returns :
-            X (DataFrame) : The feature data.
-            y (list) : The labels associated.'''
-        
-        # Independant
-        X = df.drop("DX", axis=1).values
-        # Dependant
-        y = df["DX"].values
-
-        return X, y
 
     def hyper_parameter_selection(self, verbose=0):
         # Create the test object
         self.rf = RandomForestClassifier()
 
-        X, y = self.__getXy(self.df)
+        X, y = self.getXy(self.df)
 
         # Split for a 20% testing
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
         # Now we create the grid of params we need to test
-        param_grid = {
+        self.param_grid = {
             'n_estimators' : [50, 100, 150, 200, 250, 300],
             'criterion' : ['gini', 'entropy', 'log_loss'],
             'bootstrap' : [True, False],
@@ -117,7 +116,7 @@ class MyRF:
         }
 
         # Create the test Object and fit
-        grid_search = GridSearchCV(estimator=self.rf, param_grid=param_grid, cv=3, scoring='accuracy')
+        grid_search = GridSearchCV(estimator=self.rf, param_grid=self.param_grid, cv=3, scoring='accuracy')
         grid_search.fit(self.X_train, self.y_train)
 
         self.parameters = ['n_estimators', 'criterion', 'bootstrap', 'class_weight']
@@ -128,14 +127,18 @@ class MyRF:
 
         self.grid_search = grid_search
 
-    def test_hyper_parameters(self):
-        
+        display = main_results_display()
+
+        display.display_hyperparameter_results(self.grid_search, self.parameters, self.param_grid)
+
+    def test(self, metrics=False):
         # Creates a SVC object with the best parameters selected.
         test_classifier = RandomForestClassifier(
-            n_estimators = self.grid_search.best_params_['n_estimators'],
-            criterion = self.grid_search.best_params_['criterion'],
             bootstrap = self.grid_search.best_params_['bootstrap'],
-            class_weight = self.grid_search.best_params_['class_weight']
+            n_estimators = self.grid_search.best_params_['n_estimators'],
+            class_weight = self.grid_search.best_params_['class_weight'],
+            criterion = self.grid_search.best_params_['criterion'],
+            random_state = 42 # Ensure reproducibility
         )
 
         # Runs a test to find the accuracy of the model
@@ -143,8 +146,10 @@ class MyRF:
 
         y_testresult = test_classifier.predict(self.X_test)
 
-        print("Accuracy is " + str(accuracy_score(self.y_test, y_testresult)))
-        print("Recall was " + str(recall_score(self.y_test, y_testresult, average=None)))
+        # Now display the metrics if needed
+        if metrics == True:
+            display = main_results_display()
+            display.display_class_results_text(y_testresult, self.y_test)
 
 class main_results_display:
     '''This Class will be use by both the SVM and RF approach'''
@@ -169,6 +174,23 @@ class main_results_display:
                 plt.xscale('log')
 
         plt.show()
+
+    def display_class_results_text(self, y_test, y_true):
+        print("Accuracy is " + str(accuracy_score(y_true, y_test)))
+        # Get the recall and metrics for each class
+        recall = list(recall_score(y_true, y_test, average=None, labels=['SCD', 'MCI', 'AD']))
+        precision = list(precision_score(y_true, y_test, average=None, labels=['SCD', 'MCI', 'AD']))
+        f1 = list(f1_score(y_true, y_test, average=None, labels=['SCD', 'MCI', 'AD']))
+
+        data = [["Recall"] + recall]
+        data.append(["Precision"] + precision)
+        data.append(["F1 Score"] + f1)
+
+
+
+        table = tabulate(data, ['', 'SCD', 'MCI', 'AD'], tablefmt="grid")
+        print(table)
+
 
 # TODO :: Comment and fix the fact that there is no x label for top grpahs
 # TODO :: See if the loss function cab be printed
