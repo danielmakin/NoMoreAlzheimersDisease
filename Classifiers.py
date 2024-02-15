@@ -31,9 +31,6 @@ class MyClassifier:
     def test(self, metrics):
         pass
 
-
-
-
 class MySVM(MyClassifier):
     def __init__(self, file_name, fields_to_drop):
         super().__init__()
