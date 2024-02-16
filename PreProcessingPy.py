@@ -136,43 +136,43 @@ class visual_display:
 
 class post_processing_display:
 
-    def __init__(self, file_names):
+    def __init__(self, file_name):
         self.before_dfs = []
         self.after_dfs = []
         # This should read all of the data frames needed
-        for i in range(len(file_names)):
-            temp_before_df = pd.read_csv('Data/PreProcessedData/' + file_names[i] + "/UnCleanData/data.csv")
-            temp_after_df = pd.read_csv('Data/PreProcessedData/' + file_names[i] + "/CleanedData/data.csv")
-            self.before_dfs.append(temp_before_df)
-            self.after_dfs.append(temp_after_df)
+
+        self.before = pd.read_csv('Data/PreProcessedData/' + file_name + "/UnCleanData/data.csv")
+        self.filtered = pd.read_csv('Data/PreProcessedData/' + file_name + "/CleanedData/data.csv")
+        self.smote = pd.read_csv('Data/PreProcessedData/' + file_name + "/SMOTEData/data.csv")
 
     def display_results(self):
+        plt.figure(figsize=(8,5))
         # Split into arrays where each item has a list from a class from a file
         SCD, MCI, AD = [], [], []
-        for i in range(len(self.before_dfs)):
-            SCD.append(self.before_dfs[i].loc[self.before_dfs[i]["DX"] == "SCD"])
-            SCD.append(self.after_dfs[i].loc[self.after_dfs[i]["DX"] == "SCD"])
 
-            MCI.append(self.before_dfs[i].loc[self.before_dfs[i]["DX"] == "MCI"])
-            MCI.append(self.after_dfs[i].loc[self.after_dfs[i]["DX"] == "MCI"])
+        SCD.append(self.before.loc[self.before["DX"] == "SCD"])
+        SCD.append(self.filtered.loc[self.filtered["DX"] == "SCD"])
+        SCD.append(self.smote.loc[self.smote["DX"] == "SCD"])
 
-            AD.append(self.before_dfs[i].loc[self.before_dfs[i]["DX"] == "AD"])
-            AD.append(self.after_dfs[i].loc[self.after_dfs[i]["DX"] == "AD"])
+        MCI.append(self.before.loc[self.before["DX"] == "MCI"])
+        MCI.append(self.filtered.loc[self.filtered["DX"] == "MCI"])
+        MCI.append(self.smote.loc[self.smote["DX"] == "MCI"])
 
-        fig, axes = plt.subplots(nrows=1, ncols=int(len(SCD) / 2), figsize=(20, 4))
+        AD.append(self.before.loc[self.before["DX"] == "AD"])
+        AD.append(self.filtered.loc[self.filtered["DX"] == "AD"])
+        AD.append(self.smote.loc[self.smote["DX"] == "AD"])
 
         # Now display what this means
-        for i in range(int(len(SCD) / 2)):
-            # Plot the two distributions next to each other to see changes
 
-            r = np.arange(3)
-            width = 0.25
-            axes[i].bar(r, [len(SCD[2*i]), len(MCI[2*i]), len(AD[2*i])], label='Before', width=width, edgecolor = 'black')
-            axes[i].bar(r+width, [len(SCD[2*i + 1]), len(MCI[2*i + 1]), len(AD[2*i + 1])], label='After', width=width, edgecolor = 'black')
-            axes[i].set_title("Distribution of Classes in File " + str(i + 1))
-            axes[i].set_ylabel('Class Size')
-            axes[i].set_xticks(r + width/2, ['SCD','MCI','AD'])
-            axes[i].set_xlabel('Classification')
+        r = np.arange(3)
+        width = 0.25
+        plt.bar(r-width, [len(SCD[0]), len(MCI[0]), len(AD[0])], label='Before', width=width, edgecolor = 'black')
+        plt.bar(r, [len(SCD[1]), len(MCI[1]), len(AD[1])], label='Filtered', width=width, edgecolor = 'black')
+        plt.bar(r+width, [len(SCD[2]), len(MCI[2]), len(AD[2])], label='SMOTE', width=width, edgecolor = 'black')
+        plt.title("Distribution of Classes")
+        plt.ylabel('Class Size')
+        plt.xticks(r, ['SCD','MCI','AD'])
+        plt.xlabel('Classification')
             
         plt.legend()
         plt.show()
