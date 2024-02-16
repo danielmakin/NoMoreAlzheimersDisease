@@ -2,6 +2,7 @@
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
+from imblearn.over_sampling import SMOTE
 
 class pp:
     def __init__(self, files, merge_fields, fields_needed):
@@ -16,6 +17,33 @@ class pp:
             self.df = pd.merge(self.df, temp_df, on=merge_fields, how="inner")
         # Select the Fields that are needed
         self.df = self.df[fields_needed]
+
+    def getXy(self, df):
+        '''
+        Seperate the label from the feature data.
+        
+        Args : 
+            df (DataFrame) : The data to be seperated
+        Returns :
+            X (DataFrame) : The feature data.
+            y (list) : The labels associated.'''
+        
+        # Independant
+        X = df.drop("DX", axis=1).values
+        # Dependant
+        y = df["DX"].values
+
+        return X, y
+
+    def use_SMOTE(self):
+        sm = SMOTE(random_state=42)
+
+        X, y = self.getXy(self.df.drop(columns=['RID', 'VISCODE']))
+
+        # Oversample the minority classes
+        X, y = sm.fit_resample(X, y)
+
+        self.df = pd.DataFrame(data=np.column_stack((X, y)), columns=list(self.df.drop(columns=["VISCODE", "RID", "DX"], axis=1).columns) + ["DX"])
     
     def create_ab4240(self, columns):
         '''Columns Should be Given in the order: AB42, AB40'''
@@ -26,7 +54,9 @@ class pp:
     def add_adni_merge_data(self, fields_to_keep):
         '''This adds the data from the ADNI-MERGE file. i.e. DX, MMSE, AGE, PT_EDUCAT'''
         am = pd.read_csv('Data/ADNIMERGE_15Jun2023.csv')
+
         self.df = pd.merge(self.df, am, on=['RID', 'VISCODE'], how='inner')[fields_to_keep]
+
 
     def clean_data(self):
         '''Removes the NULL values and Makes DX a Manageable Name'''
@@ -111,8 +141,8 @@ class post_processing_display:
         self.after_dfs = []
         # This should read all of the data frames needed
         for i in range(len(file_names)):
-            temp_before_df = pd.read_csv('Data/PreProcessedData/Outliers/' + file_names[i])
-            temp_after_df = pd.read_csv('Data/PreProcessedData/OutliersRemoved/' + file_names[i])
+            temp_before_df = pd.read_csv('Data/PreProcessedData/' + file_names[i] + "/UnCleanData/data.csv")
+            temp_after_df = pd.read_csv('Data/PreProcessedData/' + file_names[i] + "/CleanedData/data.csv")
             self.before_dfs.append(temp_before_df)
             self.after_dfs.append(temp_after_df)
 
