@@ -61,7 +61,7 @@ class pp:
     def clean_data(self):
         '''Removes the NULL values and Makes DX a Manageable Name'''
         # The class Data should be in the Forms: SCD, MCI, AD
-        self.df = self.df.replace("CN", "SCD").replace("Dementia", "AD").dropna()
+        self.df = self.df.replace("CN", "SCD").replace("Dementia", "AD").dropna().replace("<80", "80").replace("<8", "8")
 
     def remove_outliers(self, columns_to_clean):
 
@@ -107,6 +107,30 @@ class pp:
 
         return to_remove
     
+    def train_test_split(self, test_size=0.2, error_margin=2):
+        '''Returns in the Order train_data, test_data'''
+        # Get the Sizes needed for the Split
+        test_size = int(len(self.df) * test_size)
+
+        # We use a Regular Bin Packing Problem, not complex
+        test_data = []
+
+        for rid in self.df['RID'].unique():
+            # Get the data associated with this Entry
+            rid_data = self.df[self.df['RID'] == rid]
+            # Check whether the lengths are compatible
+            if len(test_data) + len(rid_data) < (test_size + error_margin):
+                test_data.append(rid_data)
+                test_data = pd.concat(test_data)
+            # Checks whether it is in the alloted margin
+            if (len(test_data) < test_size + error_margin) and (len(test_data) > test_size - error_margin):
+                break
+        
+        # Remove all of the Data that is in the Test Data
+        train_data = self.df[~self.df.isin(test_data).any(axis=1)]
+
+        return train_data, test_data
+    
     def write_to_csv(self, file_name):
         '''Writes a dataframe to the specified .csv file'''
         # Assume this is a pre-processing file
@@ -124,7 +148,7 @@ class visual_display:
         fig, axes = plt.subplots(nrows=1, ncols=len(fields), figsize=(20, 4))
 
         for i in range(len(fields)):
-            box_plot = [list(self.SCD[fields[i]]), list(self.MCI[fields[i]]), list(self.AD[fields[i]])]
+            box_plot = [list(self.SCD[fields[i]].astype(float)), list(self.MCI[fields[i]].astype(float)), list(self.AD[fields[i]].astype(float))]
 
             axes[i].boxplot(box_plot, showfliers=True, labels=['SCD', 'MCI', 'AD'])
             axes[i].set_title(fields[i] + ' values on BoxPlots')

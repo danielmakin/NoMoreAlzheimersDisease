@@ -1,5 +1,7 @@
 import pandas as pd
-from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.calibration import CalibratedClassifierCV
+from sklearn.metrics import roc_auc_score
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV, train_test_split
 from sklearn.svm import SVC
 
 from Classifiers.MyClassifier import MyClassifier
@@ -10,7 +12,7 @@ class MySVM(MyClassifier):
         super().__init__()
         self.df = pd.read_csv(file_name).drop(fields_to_drop, axis=1)
     
-    def hyper_parameter_selection(self, verbose=0):
+    def hyper_parameter_selection(self, verbose=0, iterations=200):
         self.svm = SVC()
         X, y = super().getXy(self.df)
 
@@ -19,16 +21,18 @@ class MySVM(MyClassifier):
 
         # These are the parameters that will be trialled
         self.param_grid = {
-            'C' : [0.001, 0.01, 0.1, 1, 10, 100, 1000],
-            'kernel' : ['linear', 'poly', 'rbf'],
-            'degree' : [2, 3, 4],
-            'decision_function_shape' : ['ovr', 'ovo']
+            'C': [0.001, 0.01, 0.1, 1, 10, 100, 1000],
+            'kernel': ['linear', 'poly', 'rbf', 'sigmoid'],
+            'shrinking': [True, False],
+            'degree': [2, 3, 4],
+            'decision_function_shape': ['ovr', 'ovo'],
+            'coef0': [0.0, 0.1, 0.5, 1.0]
         }
 
-        self.parameters = ['C', 'kernel', 'degree', 'decision_function_shape']
+        self.parameters = ['C', 'kernel', 'degree', 'decision_function_shape', 'shrinking', 'coef0']
 
         # Runs every possible combination and gets the best
-        grid_search = GridSearchCV(estimator=self.svm, param_grid=self.param_grid, cv=3, scoring='accuracy', verbose=verbose)
+        grid_search = RandomizedSearchCV(estimator=self.svm, param_distributions=self.param_grid, cv=3, scoring='accuracy', verbose=verbose, n_iter=iterations)
 
         grid_search.fit(self.X_train, self.y_train)
 
@@ -42,6 +46,7 @@ class MySVM(MyClassifier):
         # Now Display in the Notebook the output of these results
 
         super().display_hyperparameter_results(grid_search, self.parameters, self.param_grid)
+        super().display_results_against_iterations(self.grid_search.cv_results_)
 
     def test(self, metrics=False):
         
@@ -50,7 +55,8 @@ class MySVM(MyClassifier):
             C = self.grid_search.best_params_['C'],
             decision_function_shape = self.grid_search.best_params_['decision_function_shape'],
             degree = self.grid_search.best_params_['degree'],
-            kernel = self.grid_search.best_params_['kernel']
+            kernel = self.grid_search.best_params_['kernel'],
+            probability=True
         )
 
         # Runs a test to find the accuracy of the model
@@ -60,4 +66,4 @@ class MySVM(MyClassifier):
 
         # Now display the metrics if needed
         if metrics == True:
-            super().display_class_results_text(y_testresult, self.y_test)
+            super().display_class_results_text(y_testresult, self.y_test, super().auc_scores_svm(self.X_train, self.y_train, self.X_test, self.y_test))

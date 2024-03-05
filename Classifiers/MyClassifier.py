@@ -1,8 +1,11 @@
 from abc import abstractmethod
+import math
 from matplotlib import pyplot as plt
+import numpy as np
 import pandas as pd
+from sklearn.calibration import CalibratedClassifierCV
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score
+from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_score, accuracy_score, roc_auc_score
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.svm import SVC
 from tabulate import tabulate
@@ -33,25 +36,44 @@ class MyClassifier:
 
     def display_hyperparameter_results(self, grid_search, parameters, param_grid):
         results = pd.DataFrame(grid_search.cv_results_)
+        rows = math.ceil(len(parameters) / 2)
 
-        fig, axis = plt.subplots(nrows=2, ncols=2, figsize=(10, 4))
+        fig, axes = plt.subplots(nrows=rows, ncols=2, figsize=(20, rows * 4))
         fig.suptitle("Trends for the change of Hyper-Parameters")
 
-        for i in range(len(parameters)):
+        for i, ax in enumerate(axes.flat):
+            if i == len(parameters):
+                break
             temp = results.groupby('param_' + parameters[i])['mean_test_score']
-            plt.subplot(2, 2, i+1)
-            plt.plot(param_grid[parameters[i]], temp.mean(), color='blue', marker='o')
-            plt.errorbar(param_grid[parameters[i]], temp.mean(), yerr=temp.std(), color='orange')
-            plt.xlabel(parameters[i] + " value")
-            plt.ylabel("Accuracy")
+            ax.plot(param_grid[parameters[i]], temp.mean(), color='blue', marker='o')
+            ax.errorbar(param_grid[parameters[i]], temp.mean(), yerr=temp.std(), color='orange')
+            ax.set_xlabel(parameters[i] + " value")
+            ax.set_ylabel("Accuracy")
 
             if parameters[i] == 'C':
-                plt.xscale('log')
+                ax.set_xscale('log')
 
+        plt.tight_layout()
         plt.show()
 
-    def display_class_results_text(self, y_test, y_true):
-        print("Accuracy is " + str(accuracy_score(y_true, y_test)))
+    def display_results_against_iterations(self, results):
+        # Extract the mean test scores and number of iterations
+        mean_test_scores = results['mean_test_score']
+        num_iterations = np.arange(1, len(mean_test_scores) + 1)
+
+        # Track maximum accuracy found at any iteration
+        max_accuracy = np.maximum.accumulate(mean_test_scores)
+
+        # Plot maximum accuracy against number of iterations
+        plt.plot(num_iterations, max_accuracy, marker='o')
+        plt.xlabel('Number of Iterations')
+        plt.ylabel('Maximum Test Accuracy')
+        plt.title('Maximum Accuracy vs. Number of Iterations')
+        plt.grid(True)
+        plt.show()
+
+    def display_class_results_text(self, y_test, y_true, auc):
+        print("Accuracy is " + str(round(accuracy_score(y_true, y_test), 2)))
         # Get the recall and metrics for each class
         recall = list(recall_score(y_true, y_test, average=None, labels=['SCD', 'MCI', 'AD']))
         precision = list(precision_score(y_true, y_test, average=None, labels=['SCD', 'MCI', 'AD']))
@@ -60,12 +82,28 @@ class MyClassifier:
         data = [["Recall"] + recall]
         data.append(["Precision"] + precision)
         data.append(["F1 Score"] + f1)
+        data.append(["AUC"] + auc)
 
 
 
         table = tabulate(data, ['', 'SCD', 'MCI', 'AD'], tablefmt="grid")
         print(table)
 
+        cm = confusion_matrix(y_true, y_test)
 
-# TODO :: Comment and fix the fact that there is no x label for top grpahs
-# TODO :: See if the loss function cab be printed
+        # Display confusion matrix using seaborn heatmap
+        print(cm)
+
+    def auc_scores_svm(self, X_train, y_train, X_test, y_test):
+
+        # Calibrate the classifier using Platt scaling
+        calibrated_svc = CalibratedClassifierCV(SVC(probability=True))
+        calibrated_svc.fit(X_train, y_train)
+
+        # Get calibrated probabilities
+        y_pred_proba = calibrated_svc.predict_proba(X_test)
+
+        # Calculate AUC for each class using One-vs-Rest (ovr)
+        auc_ovr = roc_auc_score(y_test, y_pred_proba, average=None, multi_class='ovr')
+        print(calibrated_svc.classes_)
+        return list(np.round(auc_ovr, 3))[::-1]
