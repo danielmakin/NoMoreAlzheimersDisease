@@ -61,7 +61,7 @@ class pp:
     def clean_data(self):
         '''Removes the NULL values and Makes DX a Manageable Name'''
         # The class Data should be in the Forms: SCD, MCI, AD
-        self.df = self.df.replace("CN", "SCD").replace("Dementia", "AD").dropna().replace("<80", "80").replace("<8", "8")
+        self.df = self.df.replace("CN", "SCD").replace("Dementia", "AD").replace("<80", "80").replace("<8", "8").replace(">1700", "1700").replace("<200", "200")
 
     def remove_outliers(self, columns_to_clean):
 
@@ -87,8 +87,8 @@ class pp:
     def __remove_outliers_class(self, df, columns_to_clean):
         to_remove = []
         for i in range(len(columns_to_clean)):
-            p25 = df[columns_to_clean[i]].quantile(0.25)
-            p75 = df[columns_to_clean[i]].quantile(0.75)
+            p25 = df[columns_to_clean[i]].dropna().astype(float).quantile(0.25)
+            p75 = df[columns_to_clean[i]].dropna().astype(float).quantile(0.75)
 
             iqr = p75 - p25
 
@@ -96,8 +96,8 @@ class pp:
             upper_limit = p75 + 1.5 * iqr
             lower_limit = p25 - 1.5 * iqr
             
-            u = df[df[columns_to_clean[i]] > upper_limit]
-            l = df[df[columns_to_clean[i]] < lower_limit]
+            u = df[df[columns_to_clean[i]].astype(float) > upper_limit]
+            l = df[df[columns_to_clean[i]].astype(float) < lower_limit]
 
             # Making it a set removes duplicates
             to_remove = to_remove + (list(u.index) + list(l.index))
@@ -106,6 +106,7 @@ class pp:
         to_remove = list(set(to_remove))
 
         return to_remove
+
     
     def train_test_split(self, test_size=0.2, error_margin=2):
         '''Returns in the Order train_data, test_data'''
@@ -148,7 +149,24 @@ class visual_display:
         fig, axes = plt.subplots(nrows=1, ncols=len(fields), figsize=(20, 4))
 
         for i in range(len(fields)):
-            box_plot = [list(self.SCD[fields[i]].astype(float)), list(self.MCI[fields[i]].astype(float)), list(self.AD[fields[i]].astype(float))]
+            # Copy the DataFrame
+            temp_SCD = pd.DataFrame()
+            temp_MCI = pd.DataFrame()
+            temp_AD = pd.DataFrame()
+
+            temp_SCD['DX'] = self.SCD['DX']
+            temp_SCD['field'] = self.SCD[fields[i]]
+            temp_SCD.dropna(inplace=True)
+
+            temp_MCI['DX'] = self.MCI['DX']
+            temp_MCI['field'] = self.MCI[fields[i]]
+            temp_MCI.dropna(inplace=True)
+
+            temp_AD['DX'] = self.AD['DX']
+            temp_AD['field'] = self.AD[fields[i]]
+            temp_AD.dropna(inplace=True)
+
+            box_plot = [list(temp_SCD['field'].astype(float)), list(temp_MCI['field'].astype(float)), list(temp_AD['field'].astype(float))]
 
             axes[i].boxplot(box_plot, showfliers=True, labels=['SCD', 'MCI', 'AD'])
             axes[i].set_title(fields[i] + ' values on BoxPlots')
@@ -167,7 +185,6 @@ class post_processing_display:
 
         self.before = pd.read_csv('Data/PreProcessedData/' + file_name + "/UnCleanData/data.csv")
         self.filtered = pd.read_csv('Data/PreProcessedData/' + file_name + "/CleanedData/data.csv")
-        self.smote = pd.read_csv('Data/PreProcessedData/' + file_name + "/SMOTEData/data.csv")
 
     def display_results(self):
         plt.figure(figsize=(8,5))
@@ -176,15 +193,12 @@ class post_processing_display:
 
         SCD.append(self.before.loc[self.before["DX"] == "SCD"])
         SCD.append(self.filtered.loc[self.filtered["DX"] == "SCD"])
-        SCD.append(self.smote.loc[self.smote["DX"] == "SCD"])
 
         MCI.append(self.before.loc[self.before["DX"] == "MCI"])
         MCI.append(self.filtered.loc[self.filtered["DX"] == "MCI"])
-        MCI.append(self.smote.loc[self.smote["DX"] == "MCI"])
 
         AD.append(self.before.loc[self.before["DX"] == "AD"])
         AD.append(self.filtered.loc[self.filtered["DX"] == "AD"])
-        AD.append(self.smote.loc[self.smote["DX"] == "AD"])
 
         # Now display what this means
 
@@ -192,7 +206,6 @@ class post_processing_display:
         width = 0.25
         plt.bar(r-width, [len(SCD[0]), len(MCI[0]), len(AD[0])], label='Before', width=width, edgecolor = 'black')
         plt.bar(r, [len(SCD[1]), len(MCI[1]), len(AD[1])], label='Filtered', width=width, edgecolor = 'black')
-        plt.bar(r+width, [len(SCD[2]), len(MCI[2]), len(AD[2])], label='SMOTE', width=width, edgecolor = 'black')
         plt.title("Distribution of Classes")
         plt.ylabel('Class Size')
         plt.xticks(r, ['SCD','MCI','AD'])
