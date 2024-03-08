@@ -150,7 +150,7 @@ class visual_display:
         self.MCI = df.loc[df["DX"] == "MCI"]
         self.AD = df.loc[df["DX"] == "AD"]
 
-    def display(self, fields):
+    def display(self, fields, saveFile=None):
         fig, axes = plt.subplots(nrows=1, ncols=len(fields), figsize=(20, 4))
 
         for i in range(len(fields)):
@@ -180,8 +180,10 @@ class visual_display:
             axes[i].text(0.5, -0.20, "SCD: " + str(len(temp_SCD)) + ", MCI: " + str(len(temp_MCI)) + ", AD: " + str(len(temp_AD)), fontsize=10, ha='center', va='center', transform=axes[i].transAxes)
 
         plt.show()
+        if saveFile != None:
+            plt.savefig("Data/PreProcessedData/" + saveFile)
 
-    def display_gender(self, field="PTGENDER"):
+    def display_gender(self, field="PTGENDER", saveFile=None):
 
         plt.figure(figsize=(8,4))
 
@@ -195,6 +197,9 @@ class visual_display:
         plt.xlabel('Classification')
         plt.legend()
 
+        if saveFile != None:
+            plt.savefig("Data/PreProcessedData/" + saveFile)
+
 class post_processing_display:
 
     def __init__(self, file_name):
@@ -205,7 +210,7 @@ class post_processing_display:
         self.before = pd.read_csv('Data/PreProcessedData/' + file_name + "/UnCleanData/data.csv")
         self.filtered = pd.read_csv('Data/PreProcessedData/' + file_name + "/CleanedData/data.csv")
 
-    def display_results(self):
+    def display_results(self, saveFile=None):
         plt.figure(figsize=(8,5))
         # Split into arrays where each item has a list from a class from a file
         SCD, MCI, AD = [], [], []
@@ -232,6 +237,41 @@ class post_processing_display:
             
         plt.legend()
         plt.show()
+
+        if saveFile != None:
+            plt.savefig("Data/PreProcessedData/" + saveFile)
+
+    def display_field_amounts(self, saveFile1=None, saveFile2=None):
+        # Calculate the percentage of non-null values for each column
+        non_null_percentage = (self.before.notnull().sum() / len(self.before)) * 100
+
+        # Plotting
+        plt.figure(figsize=(10, 6))
+        non_null_percentage.plot(kind='bar')
+        plt.title('Percentage of Non-Null Values for Each Field (Before)')
+        plt.xlabel('Fields (Columns)')
+        plt.ylabel('Percentage (%)')
+        plt.xticks(rotation=45, ha='right')
+        plt.tight_layout()
+        plt.show()
+
+        if saveFile1 != None:
+            plt.savefig("Data/PreProcessedData/" + saveFile1)
+
+        non_null_percentage = (self.filtered.notnull().sum() / len(self.filtered)) * 100
+
+        # Plotting
+        plt.figure(figsize=(10, 6))
+        non_null_percentage.plot(kind='bar')
+        plt.title('Percentage of Non-Null Values for Each Field (Filtered)')
+        plt.xlabel('Fields (Columns)')
+        plt.ylabel('Percentage (%)')
+        plt.xticks(rotation=45, ha='right')
+        plt.tight_layout()
+        plt.show()
+
+        if saveFile2 != None:
+            plt.savefig("Data/PreProcessedData/" + saveFile2)
 
 
     
