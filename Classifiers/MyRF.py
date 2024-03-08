@@ -9,8 +9,11 @@ from imblearn.over_sampling import SMOTE
 
 
 class MyRF(MyClassifier):
-    def __init__(self, file_name, fields_to_drop):
-        self.df = pd.read_csv(file_name).drop(fields_to_drop, axis=1)
+    def __init__(self, file_name, fields):
+        # Get the .csv and remove the unnecessary fields
+        self.df = pd.read_csv(file_name)[fields]
+        # Now we can remove the null values
+        self.df.dropna(inplace=True)
 
     def hyper_parameter_selection(self, iterations = 100, verbose=0):
         # Create the test object
