@@ -14,9 +14,11 @@ class pp:
         # Merge in the other files, ignoring the original as it has already been read
         for i in range(1, len(files)):
             temp_df = pd.read_csv(files[i])
-            self.df = pd.merge(self.df, temp_df, on=merge_fields, how="inner")
+            self.df = pd.merge(self.df, temp_df, on=merge_fields, how="left")
         # Select the Fields that are needed
         self.df = self.df[fields_needed]
+
+        self.df.drop_duplicates(subset=['RID', merge_fields[1]], inplace=True)
 
     def getXy(self, df):
         '''
@@ -61,7 +63,10 @@ class pp:
     def clean_data(self):
         '''Removes the NULL values and Makes DX a Manageable Name'''
         # The class Data should be in the Forms: SCD, MCI, AD
-        self.df = self.df.replace("CN", "SCD").replace("Dementia", "AD").replace("<80", "80").replace("<8", "8").replace(">1700", "1700").replace("<200", "200")
+        self.df = self.df.replace("CN", "SCD").replace("Dementia", "AD").replace("<80", "80").replace("<8", "8").replace(">1700", "1700").replace("<200", "200").replace(">120", "120").replace('>1300', '1300')
+
+        if 'PTGENDER' in self.df.columns:
+            self.df = self.df.replace("Male", "0").replace("Female", "1")
 
     def remove_outliers(self, columns_to_clean):
 
@@ -170,11 +175,25 @@ class visual_display:
 
             axes[i].boxplot(box_plot, showfliers=True, labels=['SCD', 'MCI', 'AD'])
             axes[i].set_title(fields[i] + ' values on BoxPlots')
-            axes[i].set_ylabel(fields[i] + ' Value')
+            axes[i].set_ylabel(fields[i] + ' Value (pg/ml)')
             axes[i].set_xlabel('Classification')
+            axes[i].text(0.5, -0.20, "SCD: " + str(len(temp_SCD)) + ", MCI: " + str(len(temp_MCI)) + ", AD: " + str(len(temp_AD)), fontsize=10, ha='center', va='center', transform=axes[i].transAxes)
 
         plt.show()
 
+    def display_gender(self, field="PTGENDER"):
+
+        plt.figure(figsize=(8,4))
+
+        r = np.arange(3)
+        width = 0.25
+        plt.bar(r-width, [len(self.SCD.loc[self.SCD[field] == "0"]), len(self.MCI.loc[self.MCI[field] == "0"]), len(self.AD.loc[self.AD[field] == "0"])], label='Male', width=width, edgecolor = 'black')
+        plt.bar(r, [len(self.SCD.loc[self.SCD[field] == "1"]), len(self.MCI.loc[self.MCI[field] == "1"]), len(self.AD.loc[self.AD[field] == "1"])], label='Female', width=width, edgecolor = 'black')
+        plt.title("Distribution of Gender")
+        plt.ylabel('Class Size')
+        plt.xticks(r, ['SCD','MCI','AD'])
+        plt.xlabel('Classification')
+        plt.legend()
 
 class post_processing_display:
 
