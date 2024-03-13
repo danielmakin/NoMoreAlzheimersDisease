@@ -8,11 +8,13 @@ from Classifiers.MyClassifier import MyClassifier
 
 
 class MySVM(MyClassifier):
-    def __init__(self, file_name, fields_to_drop):
-        super().__init__()
-        self.df = pd.read_csv(file_name).drop(fields_to_drop, axis=1)
+    def __init__(self, file_name, fields):
+        # Get the .csv and remove the unnecessary fields
+        self.df = pd.read_csv(file_name)[fields]
+        # Now we can remove the null values
+        self.df.dropna(inplace=True)
     
-    def hyper_parameter_selection(self, verbose=0, iterations=200):
+    def hyper_parameter_selection(self, verbose=0):
         self.svm = SVC()
         X, y = super().getXy(self.df)
 
@@ -32,7 +34,7 @@ class MySVM(MyClassifier):
         self.parameters = ['C', 'kernel', 'degree', 'decision_function_shape', 'shrinking', 'coef0']
 
         # Runs every possible combination and gets the best
-        grid_search = RandomizedSearchCV(estimator=self.svm, param_distributions=self.param_grid, cv=3, scoring='accuracy', verbose=verbose, n_iter=iterations)
+        grid_search = GridSearchCV(estimator=self.svm, param_grid=self.param_grid, cv=3, scoring='accuracy', verbose=verbose)
 
         grid_search.fit(self.X_train, self.y_train)
 
@@ -46,7 +48,7 @@ class MySVM(MyClassifier):
         # Now Display in the Notebook the output of these results
 
         super().display_hyperparameter_results(grid_search, self.parameters, self.param_grid)
-        super().display_results_against_iterations(self.grid_search.cv_results_)
+        # super().display_results_against_iterations(self.grid_search.cv_results_)
 
     def test(self, metrics=False):
         
@@ -56,6 +58,7 @@ class MySVM(MyClassifier):
             decision_function_shape = self.grid_search.best_params_['decision_function_shape'],
             degree = self.grid_search.best_params_['degree'],
             kernel = self.grid_search.best_params_['kernel'],
+            coef0 = self.grid_search.best_params_['coef0'],
             probability=True
         )
 

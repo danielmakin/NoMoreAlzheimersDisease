@@ -34,7 +34,7 @@ class MyClassifier:
     def test(self, metrics):
         pass
 
-    def display_hyperparameter_results(self, grid_search, parameters, param_grid):
+    def display_hyperparameter_results(self, grid_search, parameters, param_grid, file_name):
         results = pd.DataFrame(grid_search.cv_results_)
         rows = math.ceil(len(parameters) / 2)
 
@@ -54,7 +54,33 @@ class MyClassifier:
                 ax.set_xscale('log')
 
         plt.tight_layout()
-        plt.show()
+        # plt.show()
+
+        if file_name != "":
+            # Save the File
+            plt.savefig(file_name + "_scores.png")
+
+        results = pd.DataFrame(grid_search.cv_results_)
+        rows = math.ceil(len(parameters) / 2)
+
+        fig, axes = plt.subplots(nrows=rows, ncols=2, figsize=(20, rows * 4))
+        fig.suptitle("Trends for the change of Hyper-Parameters in Terms of Time")
+
+        for i, ax in enumerate(axes.flat):
+            if i == len(parameters):
+                break
+            temp = results.groupby('param_' + parameters[i])['mean_fit_time']
+            ax.plot(param_grid[parameters[i]], temp.mean(), color='blue', marker='o')
+            ax.errorbar(param_grid[parameters[i]], temp.mean(), yerr=temp.std(), color='orange')
+            ax.set_xlabel(parameters[i] + " value")
+            ax.set_ylabel("Time Taken (s)")
+
+        plt.tight_layout()
+        # plt.show()
+
+        if file_name != "":
+            # Save the File
+            plt.savefig(file_name + "_times.png")
 
     def display_results_against_iterations(self, results):
         # Extract the mean test scores and number of iterations
@@ -70,10 +96,9 @@ class MyClassifier:
         plt.ylabel('Maximum Test Accuracy')
         plt.title('Maximum Accuracy vs. Number of Iterations')
         plt.grid(True)
-        plt.show()
 
     def display_class_results_text(self, y_test, y_true, auc):
-        print("Accuracy is " + str(round(accuracy_score(y_true, y_test), 2)))
+        print("Accuracy is " + str(accuracy_score(y_true, y_test)))
         # Get the recall and metrics for each class
         recall = list(recall_score(y_true, y_test, average=None, labels=['SCD', 'MCI', 'AD']))
         precision = list(precision_score(y_true, y_test, average=None, labels=['SCD', 'MCI', 'AD']))
@@ -89,7 +114,7 @@ class MyClassifier:
         table = tabulate(data, ['', 'SCD', 'MCI', 'AD'], tablefmt="grid")
         print(table)
 
-        cm = confusion_matrix(y_true, y_test)
+        cm = confusion_matrix(y_true, y_test, labels=['SCD', 'MCI', 'AD'])
 
         # Display confusion matrix using seaborn heatmap
         print(cm)

@@ -1,12 +1,12 @@
-from Classifiers.MyRF import MyRF
+from Classifiers.MySVM import MySVM
 
 def test(path, fields, file_output):
-    rf = MyRF(path, fields)
+    svm = MySVM(path, fields)
 
     # Before Removing Outliers
     print("Computing Results.......")
-    rf.hyper_parameter_selection(file_name=file_output)
-    rf.test(metrics=True)
+    svm.hyper_parameter_selection(file_name=file_output)
+    svm.test(metrics=True)
 
 
 

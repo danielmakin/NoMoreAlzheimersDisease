@@ -1,0 +1,152 @@
+----------Testing With Fields (File 1 (U)): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT']
+Computing Results.......
+Best Parameters:  {'bootstrap': True, 'class_weight': 'balanced', 'criterion': 'log_loss', 'max_depth': 20, 'max_features': 'log2', 'min_samples_split': 10, 'n_estimators': 50}
+Best Training Score:  0.7083333333333334
+Accuracy is 0.7281553398058253
++-----------+----------+----------+----------+
+|           |      SCD |      MCI |       AD |
++===========+==========+==========+==========+
+| Recall    | 1        | 0.40625  | 0.763158 |
++-----------+----------+----------+----------+
+| Precision | 0.846154 | 0.590909 | 0.690476 |
++-----------+----------+----------+----------+
+| F1 Score  | 0.916667 | 0.481481 | 0.725    |
++-----------+----------+----------+----------+
+| AUC       | 0.954545 | 0.725792 | 0.924494 |
++-----------+----------+----------+----------+
+[[33  0  0]
+ [ 6 13 13]
+ [ 0  9 29]]
+----------Testing With Fields (File 1(U)): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT', 'ABETA','PTAU','TAU']
+Computing Results.......
+Best Parameters:  {'bootstrap': True, 'class_weight': 'balanced', 'criterion': 'gini', 'max_depth': 10, 'max_features': 'sqrt', 'min_samples_split': 5, 'n_estimators': 50}
+Best Training Score:  0.7028985507246377
+Accuracy is 0.6142857142857143
++-----------+----------+----------+----------+
+|           |      SCD |      MCI |       AD |
++===========+==========+==========+==========+
+| Recall    | 0.583333 | 0.59375  | 0.714286 |
++-----------+----------+----------+----------+
+| Precision | 0.636364 | 0.575758 | 0.666667 |
++-----------+----------+----------+----------+
+| F1 Score  | 0.608696 | 0.584615 | 0.689655 |
++-----------+----------+----------+----------+
+| AUC       | 0.839221 | 0.67352  | 0.95727  |
++-----------+----------+----------+----------+
+[[14 10  0]
+ [ 8 19  5]
+ [ 0  4 10]]
+----------Testing With Fields (File 1 (C)): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT']
+Computing Results.......
+Best Parameters:  {'bootstrap': True, 'class_weight': 'balanced_subsample', 'criterion': 'log_loss', 'max_depth': 30, 'max_features': 'sqrt', 'min_samples_split': 2, 'n_estimators': 50}
+Best Training Score:  0.7044723294723294
+Accuracy is 0.7261904761904762
++-----------+----------+----------+----------+
+|           |      SCD |      MCI |       AD |
++===========+==========+==========+==========+
+| Recall    | 0.818182 | 0.6      | 0.730769 |
++-----------+----------+----------+----------+
+| Precision | 0.84375  | 0.535714 | 0.791667 |
++-----------+----------+----------+----------+
+| F1 Score  | 0.830769 | 0.566038 | 0.76     |
++-----------+----------+----------+----------+
+| AUC       | 0.957516 | 0.770169 | 0.950928 |
++-----------+----------+----------+----------+
+[[27  6  0]
+ [ 5 15  5]
+ [ 0  7 19]]
+----------Testing With Fields (File 1 (C)): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT', 'ABETA','PTAU','TAU']
+Computing Results.......
+Best Parameters:  {'bootstrap': True, 'class_weight': 'balanced_subsample', 'criterion': 'gini', 'max_depth': 30, 'max_features': 'sqrt', 'min_samples_split': 5, 'n_estimators': 50}
+Best Training Score:  0.7657657657657658
+Accuracy is 0.6071428571428571
++-----------+----------+----------+----------+
+|           |      SCD |      MCI |       AD |
++===========+==========+==========+==========+
+| Recall    | 0.5625   | 0.642857 | 0.583333 |
++-----------+----------+----------+----------+
+| Precision | 0.529412 | 0.6      | 0.777778 |
++-----------+----------+----------+----------+
+| F1 Score  | 0.545455 | 0.62069  | 0.666667 |
++-----------+----------+----------+----------+
+| AUC       | 0.850781 | 0.642857 | 0.946023 |
++-----------+----------+----------+----------+
+[[ 9  7  0]
+ [ 8 18  2]
+ [ 0  5  7]]
+----------Testing With Fields (File 2 (U)): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','ABETA','PTAU','TAU','MMSE','PTEDUCAT','AGE','PTGENDER']
+Computing Results.......
+Best Parameters:  {'bootstrap': False, 'class_weight': 'balanced', 'criterion': 'log_loss', 'max_depth': 10, 'max_features': 'sqrt', 'min_samples_split': 2, 'n_estimators': 300}
+Best Training Score:  0.7029372733530618
+Accuracy is 0.6782608695652174
++-----------+----------+----------+----------+
+|           |      SCD |      MCI |       AD |
++===========+==========+==========+==========+
+| Recall    | 0.716216 | 0.631579 | 0.738095 |
++-----------+----------+----------+----------+
+| Precision | 0.630952 | 0.692308 | 0.738095 |
++-----------+----------+----------+----------+
+| F1 Score  | 0.670886 | 0.66055  | 0.738095 |
++-----------+----------+----------+----------+
+| AUC       | 0.838358 | 0.74085  | 0.954344 |
++-----------+----------+----------+----------+
+[[53 21  0]
+ [31 72 11]
+ [ 0 11 31]]
+----------Testing With Fields (File 2 (U)): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','MMSE','PTEDUCAT','AGE','PTGENDER']
+Computing Results.......
+Best Parameters:  {'bootstrap': True, 'class_weight': 'balanced', 'criterion': 'entropy', 'max_depth': 20, 'max_features': 'sqrt', 'min_samples_split': 2, 'n_estimators': 150}
+Best Training Score:  0.690902745463006
+Accuracy is 0.7186147186147186
++-----------+----------+----------+----------+
+|           |      SCD |      MCI |       AD |
++===========+==========+==========+==========+
+| Recall    | 0.594937 | 0.788136 | 0.764706 |
++-----------+----------+----------+----------+
+| Precision | 0.734375 | 0.699248 | 0.764706 |
++-----------+----------+----------+----------+
+| F1 Score  | 0.657343 | 0.741036 | 0.764706 |
++-----------+----------+----------+----------+
+| AUC       | 0.828989 | 0.735038 | 0.976933 |
++-----------+----------+----------+----------+
+[[47 32  0]
+ [17 93  8]
+ [ 0  8 26]]
+----------Testing With Fields (File 2 (C)): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','ABETA','PTAU','TAU','MMSE','PTEDUCAT','AGE','PTGENDER']
+Computing Results.......
+Best Parameters:  {'bootstrap': True, 'class_weight': 'balanced_subsample', 'criterion': 'entropy', 'max_depth': 20, 'max_features': 'sqrt', 'min_samples_split': 10, 'n_estimators': 300}
+Best Training Score:  0.7084291187739463
+Accuracy is 0.6785714285714286
++-----------+----------+----------+----------+
+|           |      SCD |      MCI |       AD |
++===========+==========+==========+==========+
+| Recall    | 0.6      | 0.67619  | 0.83871  |
++-----------+----------+----------+----------+
+| Precision | 0.6      | 0.71     | 0.722222 |
++-----------+----------+----------+----------+
+| F1 Score  | 0.6      | 0.692683 | 0.776119 |
++-----------+----------+----------+----------+
+| AUC       | 0.809436 | 0.75123  | 0.981427 |
++-----------+----------+----------+----------+
+[[36 24  0]
+ [24 71 10]
+ [ 0  5 26]]
+----------Testing With Fields (File 2 (C)): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','MMSE','PTEDUCAT','AGE','PTGENDER']
+Computing Results.......
+Best Parameters:  {'bootstrap': True, 'class_weight': 'balanced_subsample', 'criterion': 'entropy', 'max_depth': 10, 'max_features': 'sqrt', 'min_samples_split': 2, 'n_estimators': 150}
+Best Training Score:  0.6853167987677069
+Accuracy is 0.7106598984771574
++-----------+----------+----------+----------+
+|           |      SCD |      MCI |       AD |
++===========+==========+==========+==========+
+| Recall    | 0.730159 | 0.67     | 0.794118 |
++-----------+----------+----------+----------+
+| Precision | 0.638889 | 0.736264 | 0.794118 |
++-----------+----------+----------+----------+
+| F1 Score  | 0.681481 | 0.701571 | 0.794118 |
++-----------+----------+----------+----------+
+| AUC       | 0.828654 | 0.756856 | 0.97961  |
++-----------+----------+----------+----------+
+[[46 17  0]
+ [26 67  7]
+ [ 0  7 27]]

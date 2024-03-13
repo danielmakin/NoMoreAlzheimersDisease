@@ -15,7 +15,7 @@ class MyRF(MyClassifier):
         # Now we can remove the null values
         self.df.dropna(inplace=True)
 
-    def hyper_parameter_selection(self, iterations = 100, verbose=0):
+    def hyper_parameter_selection(self, verbose=0, file_name=""):
         # Create the test object
         self.rf = RandomForestClassifier()
 
@@ -36,19 +36,18 @@ class MyRF(MyClassifier):
         }
 
         # Create the test Object and fit
-        grid_search = RandomizedSearchCV(estimator=self.rf, param_distributions=self.param_grid, cv=3, scoring='accuracy', n_iter=iterations, verbose=verbose)
+        grid_search = GridSearchCV(estimator=self.rf, param_grid=self.param_grid, cv=3, scoring='accuracy', verbose=verbose)
         grid_search.fit(self.X_train, self.y_train)
 
         self.parameters = ['n_estimators', 'criterion', 'bootstrap', 'class_weight', 'max_depth', 'min_samples_split', 'max_features']
         # Display the best parameters and best accuracy
         print("Best Parameters: ", grid_search.best_params_)
-        print("Best Score: ", grid_search.best_score_)
+        print("Best Training Score: ", grid_search.best_score_)
         # Store these values for next function
 
         self.grid_search = grid_search
 
-        super().display_hyperparameter_results(self.grid_search, self.parameters, self.param_grid)
-        super().display_results_against_iterations(self.grid_search.cv_results_)
+        super().display_hyperparameter_results(self.grid_search, self.parameters, self.param_grid, file_name)
 
     def train_test_SMOTE(self, metrics=True):
         test_classifier = RandomForestClassifier(
@@ -92,7 +91,6 @@ class MyRF(MyClassifier):
 
         # Calculate the AUC score
         auc = roc_auc_score(y_test, y_pred_proba, average=None, multi_class='ovr')  # Assuming you're interested in the AUC for the positive class
-        print("AUC:", auc)
         return list(auc)[::-1]
 
     def test(self, metrics=False):
