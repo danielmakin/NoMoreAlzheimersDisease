@@ -9,7 +9,7 @@ data.
 ## File Explanations
 * Files:
     * `rf.py`, `svm.py` and `mlp.py`: These are the Experimental Files for Each Respective Classifier.
-        * These can be Ran Using **python3 <classifier>** (For the Sake of testing these have been outputted to a file.)
+        * These can be Ran Using **python3 *classifier*** (For the Sake of testing these have been outputted to a file.)
         * These Have been Outputted to `mlp_output/`, `rf_output/` and `mlp_output/` Respectively.
     * `PreProcessing.ipynb`, `PreProcessing2.ipynb`: These are the Respective Data Pre-Processing Files.
         * Located in `PreProcessingFiles/`
@@ -28,5 +28,5 @@ data.
 * matplotlib.pyplot
 * imblearn
 
-*These Can Be Installed Using the Command pip install <module>*. <br>
+These Can Be Installed Using the Command pip install *module*. <br>
 Repository Used for This Project can be Found at: https://github.com/danielmakin/NoMoreAlzheimersDisease
