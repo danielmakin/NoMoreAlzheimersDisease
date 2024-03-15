@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
@@ -15,7 +15,7 @@ class MyMLP(MyClassifier):
         # Now we can remove the null values
         self.df.dropna(inplace=True)
 
-    def test(self, metrics=False, max_iterations=1000, verbose=0):
+    def test(self, metrics=False, max_iterations=10000, verbose=0):
 
         y = self.df.pop("DX")
         X = self.df
@@ -43,7 +43,9 @@ class MyMLP(MyClassifier):
         if metrics == True:
             print(classification_report(y_test, y_pred))
 
-    def plot_loss(self):
+            print(confusion_matrix(y_test, y_pred, labels=['SCD', 'MCI', 'AD']))
+
+    def plot_loss(self, file_name):
         # Plot the loss curve
         plt.figure(figsize=(10, 6))
         plt.plot(np.arange(1, len(self.mlp_classifier.loss_curve_) + 1), self.mlp_classifier.loss_curve_, linestyle='-')
@@ -51,4 +53,4 @@ class MyMLP(MyClassifier):
         plt.xlabel('Iterations')
         plt.ylabel('Loss')
         plt.grid(True)
-        plt.show()
+        plt.savefig(file_name)
