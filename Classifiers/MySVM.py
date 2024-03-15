@@ -14,7 +14,7 @@ class MySVM(MyClassifier):
         # Now we can remove the null values
         self.df.dropna(inplace=True)
     
-    def hyper_parameter_selection(self, verbose=0):
+    def hyper_parameter_selection(self, verbose=0, file_name=""):
         self.svm = SVC()
         X, y = super().getXy(self.df)
 
@@ -23,15 +23,19 @@ class MySVM(MyClassifier):
 
         # These are the parameters that will be trialled
         self.param_grid = {
-            'C': [0.001, 0.01, 0.1, 1, 10, 100, 1000],
+            'C': [0.001, 0.01, 0.1, 1, 10, 100],
             'kernel': ['linear', 'poly', 'rbf', 'sigmoid'],
+            # 'gamma': ['scale', 'auto', 0.001, 0.01, 0.1, 1, 10, 100],
+            'degree': [2, 3, 4, 5],
+            'coef0': [0.0, 0.1, 0.5, 1.0],
             'shrinking': [True, False],
-            'degree': [2, 3, 4],
-            'decision_function_shape': ['ovr', 'ovo'],
-            'coef0': [0.0, 0.1, 0.5, 1.0]
-        }
+            'probability': [True, False],
+            'class_weight': ['balanced'],
+            'tol': [1e-3, 1e-4, 1e-5],
+            'decision_function_shape': ['ovo', 'ovr']
+}
 
-        self.parameters = ['C', 'kernel', 'degree', 'decision_function_shape', 'shrinking', 'coef0']
+        self.parameters = ['C', 'kernel', 'degree', 'decision_function_shape', 'shrinking', 'coef0', 'probability', 'class_weight', 'tol']
 
         # Runs every possible combination and gets the best
         grid_search = GridSearchCV(estimator=self.svm, param_grid=self.param_grid, cv=3, scoring='accuracy', verbose=verbose)
@@ -47,7 +51,7 @@ class MySVM(MyClassifier):
 
         # Now Display in the Notebook the output of these results
 
-        super().display_hyperparameter_results(grid_search, self.parameters, self.param_grid)
+        super().display_hyperparameter_results(grid_search, self.parameters, self.param_grid, file_name)
         # super().display_results_against_iterations(self.grid_search.cv_results_)
 
     def test(self, metrics=False):
@@ -59,7 +63,11 @@ class MySVM(MyClassifier):
             degree = self.grid_search.best_params_['degree'],
             kernel = self.grid_search.best_params_['kernel'],
             coef0 = self.grid_search.best_params_['coef0'],
-            probability=True
+            probability = self.grid_search.best_params_['probability'],
+            # gamma = self.grid_search.best_params_['gamma'],
+            shrinking = self.grid_search.best_params_['shrinking'],
+            tol = self.grid_search.best_params_['tol'],
+            class_weight = self.grid_search.best_params_['class_weight']
         )
 
         # Runs a test to find the accuracy of the model
