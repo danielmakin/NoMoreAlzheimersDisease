@@ -115,7 +115,7 @@ class MyRF(MyClassifier):
         if metrics == True:
             super().display_class_results_text(y_testresult, self.y_test, self.get_auc(self.X_train, self.y_train, self.X_test, self.y_test))
 
-    def relative_importance(self):
+    def relative_importance(self, file_path):
         # Get the importance of each feature in this classifier
         importances = self.test_classifier.feature_importances_
 
@@ -127,4 +127,4 @@ class MyRF(MyClassifier):
         plt.bar(X.columns.tolist(), importances)
         plt.xlabel("Feature")
         plt.ylabel("Importance")
-        plt.show()
+        plt.savefig(file_path)
