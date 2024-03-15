@@ -28,5 +28,5 @@ data.
 * matplotlib.pyplot
 * imblearn
 
-*These Can Be Installed Using the Command pip install <module>*
+*These Can Be Installed Using the Command pip install <module>*. <br>
 Repository Used for This Project can be Found at: https://github.com/danielmakin/NoMoreAlzheimersDisease
