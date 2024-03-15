@@ -1,10 +1,9 @@
 # NoMoreAlzheimersDisease
-Repository for the creation and maintenance of python files associated with my third-year project.
-* Experimenting with several multi-class feature-based machine learning classifiers such as modified Random Forest and
-Support Vector Machine. 
+Repository for the creation and maintenance of python files associated with third-year project.
+* Experimenting with several multi-class feature-based machine learning classifiers such as modified Random Forest, Support Vector Machine and Multilayer Perceptron.
 * Classifying patients into Subjective Cognitive Decline, Mild Cognitive Impairment and Alzheimer’s Disease.
 * Aiding detection of conditions that can lead to (and including) Alzheimer’s disease via training bio-markers in blood
-data.
+data to identify patterns.
 
 ## File Explanations
 * Files:
@@ -14,12 +13,16 @@ data.
     * `PreProcessing.ipynb`, `PreProcessing2.ipynb`: These are the Respective Data Pre-Processing Files.
         * Located in `PreProcessingFiles/`
         * `PreProcessingFiles/PreProcecssingPy.py` Contains the Logic used for these Jupyter Notebooks.
-    * `PreProcessingFiles/Data`: This Houses any PreProcessing (Actual Raw Data), This includes Method Files that May have been used for Analysis.
+    * `PreProcessingFiles/Data`: This Houses any PreProcessing (Actual Raw Data).
 
 * Classifiers:
     * This Module is Used for All Classification Issues and Relies upon the `sklearn` library.
     * `MyClassifier.py` is the Base class that Also houses Some Useful Modules used by all.
     * `MyMLP`, `MyRF`, `MySVM` Have each been derived from `MyClassifier.py`.
+
+* Data Sources:
+    * Method Files were Downloaded to Support the Merging of Files, These Can Be Found at `PreProcessingFiles/Data/PlasmaMethods`.
+    * Data was Sourced from [ADNI](https://adni.loni.usc.edu/)
 
 ## Necessary Modules
 * sklearn
