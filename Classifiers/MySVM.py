@@ -25,7 +25,6 @@ class MySVM(MyClassifier):
         self.param_grid = {
             'C': [0.001, 0.01, 0.1, 1, 10, 100],
             'kernel': ['linear', 'poly', 'rbf', 'sigmoid'],
-            # 'gamma': ['scale', 'auto', 0.001, 0.01, 0.1, 1, 10, 100],
             'degree': [2, 3, 4, 5],
             'coef0': [0.0, 0.1, 0.5, 1.0],
             'shrinking': [True, False],
@@ -38,7 +37,7 @@ class MySVM(MyClassifier):
         self.parameters = ['C', 'kernel', 'degree', 'decision_function_shape', 'shrinking', 'coef0', 'probability', 'class_weight', 'tol']
 
         # Runs every possible combination and gets the best
-        grid_search = GridSearchCV(estimator=self.svm, param_grid=self.param_grid, cv=3, scoring='accuracy', verbose=verbose)
+        grid_search = RandomizedSearchCV(estimator=self.svm, param_distributions=self.param_grid, cv=3, scoring='accuracy', verbose=verbose, n_iter=50, n_jobs=-1)
 
         grid_search.fit(self.X_train, self.y_train)
 

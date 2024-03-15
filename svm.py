@@ -5,7 +5,7 @@ def test(path, fields, file_output):
 
     # Before Removing Outliers
     print("Computing Results.......")
-    svm.hyper_parameter_selection(file_name=file_output, verbose=3)
+    svm.hyper_parameter_selection(file_name=file_output, verbose=0)
     svm.test(metrics=True)
 
 

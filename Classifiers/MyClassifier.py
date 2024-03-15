@@ -44,7 +44,6 @@ class MyClassifier:
         for i, ax in enumerate(axes.flat):
             if i == len(parameters):
                 break
-            print("Here is the PARAM: " + parameters[i])
             temp = results.groupby('param_' + str(parameters[i]))['mean_test_score']
             ax.plot(param_grid[parameters[i]], temp.mean(), color='blue', marker='o')
             ax.errorbar(param_grid[parameters[i]], temp.mean(), yerr=temp.std(), color='orange')
