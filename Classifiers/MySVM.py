@@ -51,7 +51,6 @@ class MySVM(MyClassifier):
         # Now Display in the Notebook the output of these results
 
         super().display_hyperparameter_results(grid_search, self.parameters, self.param_grid, file_name)
-        # super().display_results_against_iterations(self.grid_search.cv_results_)
 
     def test(self, metrics=False):
         
@@ -63,7 +62,6 @@ class MySVM(MyClassifier):
             kernel = self.grid_search.best_params_['kernel'],
             coef0 = self.grid_search.best_params_['coef0'],
             probability = self.grid_search.best_params_['probability'],
-            # gamma = self.grid_search.best_params_['gamma'],
             shrinking = self.grid_search.best_params_['shrinking'],
             tol = self.grid_search.best_params_['tol'],
             class_weight = self.grid_search.best_params_['class_weight']

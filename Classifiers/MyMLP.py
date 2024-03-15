@@ -17,16 +17,6 @@ class MyMLP(MyClassifier):
 
     def test(self, metrics=False, max_iterations=10000, verbose=0):
 
-        # y = self.df.pop("DX")
-        # X = self.df
-
-        # X_train, X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-        # # Standardize features by removing the mean and scaling to unit variance
-        # scaler = StandardScaler()
-        # self.X_train_scaled = scaler.fit_transform(X_train)
-        # self.X_test_scaled = scaler.transform(X_test)
-
         # Initialize and train the MLP classifier
         mlp_classifier = MLPClassifier(
             hidden_layer_sizes = self.grid_search.best_params_['hidden_layer_sizes'],
