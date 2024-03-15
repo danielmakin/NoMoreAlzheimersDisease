@@ -5,6 +5,7 @@ def test(path, fields, file_output):
 
     # Before Removing Outliers
     print("Computing Results.......")
+    mlp.hyper_parameter_selection(verbose=0)
     mlp.test(metrics=True, max_iterations=2000)
     mlp.plot_loss(file_output)
 
