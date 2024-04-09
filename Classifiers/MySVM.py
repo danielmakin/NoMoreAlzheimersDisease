@@ -32,7 +32,7 @@ class MySVM(MyClassifier):
             'class_weight': ['balanced'],
             'tol': [1e-3, 1e-4, 1e-5],
             'decision_function_shape': ['ovo', 'ovr']
-}
+        }
 
         self.parameters = ['C', 'kernel', 'degree', 'decision_function_shape', 'shrinking', 'coef0', 'probability', 'class_weight', 'tol']
 

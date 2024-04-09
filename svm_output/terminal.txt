@@ -1,4 +1,4 @@
-----------Testing With Fields (File 1 (U)): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT']
+----------Testing With Fields (File 1 (U): BIG): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT']
 Computing Results.......
 Best Parameters:  {'tol': 0.001, 'shrinking': False, 'probability': True, 'kernel': 'rbf', 'degree': 5, 'decision_function_shape': 'ovo', 'coef0': 0.5, 'class_weight': 'balanced', 'C': 100}
 Best Score:  0.6789215686274511
@@ -18,7 +18,7 @@ Accuracy is 0.6893203883495146
 [[31  2  0]
  [10 12 10]
  [ 0 10 28]]
-----------Testing With Fields (File 1(U)): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT', 'ABETA','PTAU','TAU']
+----------Testing With Fields (File 1(U): SMALL): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT', 'ABETA','PTAU','TAU']
 Computing Results.......
 Best Parameters:  {'tol': 0.001, 'shrinking': True, 'probability': False, 'kernel': 'linear', 'degree': 4, 'decision_function_shape': 'ovr', 'coef0': 1.0, 'class_weight': 'balanced', 'C': 100}
 Best Score:  0.6376811594202899
@@ -38,7 +38,7 @@ Accuracy is 0.6714285714285714
 [[21  3  0]
  [12 13  7]
  [ 0  1 13]]
-----------Testing With Fields (File 1 (C)): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT']
+----------Testing With Fields (File 1 (C): BIG): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT']
 Computing Results.......
 Best Parameters:  {'tol': 0.001, 'shrinking': False, 'probability': True, 'kernel': 'poly', 'degree': 2, 'decision_function_shape': 'ovo', 'coef0': 1.0, 'class_weight': 'balanced', 'C': 10}
 Best Score:  0.6775793650793651
@@ -58,7 +58,7 @@ Accuracy is 0.7976190476190477
 [[31  2  0]
  [ 5 13  7]
  [ 0  3 23]]
-----------Testing With Fields (File 1 (C)): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT', 'ABETA','PTAU','TAU']
+----------Testing With Fields (File 1 (C): SMALL): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT', 'ABETA','PTAU','TAU']
 Computing Results.......
 Best Parameters:  {'tol': 1e-05, 'shrinking': False, 'probability': True, 'kernel': 'linear', 'degree': 2, 'decision_function_shape': 'ovo', 'coef0': 1.0, 'class_weight': 'balanced', 'C': 100}
 Best Score:  0.7027027027027026
@@ -78,7 +78,7 @@ Accuracy is 0.6964285714285714
 [[14  2  0]
  [10 14  4]
  [ 0  1 11]]
-----------Testing With Fields (File 2 (U)): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','ABETA','PTAU','TAU','MMSE','PTEDUCAT','AGE','PTGENDER']
+----------Testing With Fields (File 2 (U): SMALL): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','ABETA','PTAU','TAU','MMSE','PTEDUCAT','AGE','PTGENDER']
 Computing Results.......
 Best Parameters:  {'tol': 0.0001, 'shrinking': True, 'probability': False, 'kernel': 'linear', 'degree': 3, 'decision_function_shape': 'ovo', 'coef0': 1.0, 'class_weight': 'balanced', 'C': 0.1}
 Best Score:  0.63328436694982
@@ -98,7 +98,7 @@ Accuracy is 0.591304347826087
 [[56 17  1]
  [48 45 21]
  [ 0  7 35]]
-----------Testing With Fields (File 2 (U)): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','MMSE','PTEDUCAT','AGE','PTGENDER']
+----------Testing With Fields (File 2 (U): BIG): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','MMSE','PTEDUCAT','AGE','PTGENDER']
 Computing Results.......
 Best Parameters:  {'tol': 1e-05, 'shrinking': False, 'probability': True, 'kernel': 'poly', 'degree': 2, 'decision_function_shape': 'ovo', 'coef0': 0.0, 'class_weight': 'balanced', 'C': 100}
 Best Score:  0.6344952550164277
@@ -118,7 +118,7 @@ Accuracy is 0.6103896103896104
 [[59 19  1]
  [46 52 20]
  [ 0  4 30]]
-----------Testing With Fields (File 2 (C)): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','ABETA','PTAU','TAU','MMSE','PTEDUCAT','AGE','PTGENDER']
+----------Testing With Fields (File 2 (C): BIG): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','ABETA','PTAU','TAU','MMSE','PTEDUCAT','AGE','PTGENDER']
 Computing Results.......
 Best Parameters:  {'tol': 1e-05, 'shrinking': False, 'probability': False, 'kernel': 'linear', 'degree': 3, 'decision_function_shape': 'ovo', 'coef0': 0.1, 'class_weight': 'balanced', 'C': 1}
 Best Score:  0.6573140780037332
@@ -138,7 +138,7 @@ Accuracy is 0.6224489795918368
 [[42 18  0]
  [37 55 13]
  [ 0  6 25]]
-----------Testing With Fields (File 2 (C)): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','MMSE','PTEDUCAT','AGE','PTGENDER']
+----------Testing With Fields (File 2 (C): SMALL): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','MMSE','PTEDUCAT','AGE','PTGENDER']
 Computing Results.......
 Best Parameters:  {'tol': 0.0001, 'shrinking': True, 'probability': False, 'kernel': 'linear', 'degree': 2, 'decision_function_shape': 'ovr', 'coef0': 1.0, 'class_weight': 'balanced', 'C': 10}
 Best Score:  0.6216450722899788

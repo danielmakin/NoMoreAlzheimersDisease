@@ -1,13 +1,13 @@
-----------Testing With Fields (File 1 (U)): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT']
+----------Testing With Fields (File 1 (U): BIG): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT']
 Computing Results.......
 Best Parameters:  {'solver': 'adam', 'hidden_layer_sizes': (100, 100), 'alpha': 0.0001, 'activation': 'logistic'}
 Best Training Score:  0.6348039215686274
 Accuracy: 0.7572815533980582
               precision    recall  f1-score   support
 
-          AD       0.76      0.82      0.78        38
-         MCI       0.65      0.47      0.55        32
          SCD       0.82      0.97      0.89        33
+         MCI       0.65      0.47      0.55        32
+          AD       0.76      0.82      0.78        38
 
     accuracy                           0.76       103
    macro avg       0.74      0.75      0.74       103
@@ -16,16 +16,16 @@ weighted avg       0.74      0.76      0.74       103
 [[32  1  0]
  [ 7 15 10]
  [ 0  7 31]]
-----------Testing With Fields (File 1(U)): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT', 'ABETA','PTAU','TAU']
+----------Testing With Fields (File 1(U): SMALL): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT', 'ABETA','PTAU','TAU']
 Computing Results.......
 Best Parameters:  {'solver': 'adam', 'hidden_layer_sizes': (50,), 'alpha': 0.05, 'activation': 'tanh'}
 Best Training Score:  0.5869565217391304
 Accuracy: 0.6428571428571429
               precision    recall  f1-score   support
 
-          AD       0.71      0.71      0.71        14
-         MCI       0.59      0.69      0.64        32
          SCD       0.68      0.54      0.60        24
+         MCI       0.59      0.69      0.64        32
+          AD       0.71      0.71      0.71        14
 
     accuracy                           0.64        70
    macro avg       0.66      0.65      0.65        70
@@ -34,16 +34,16 @@ weighted avg       0.65      0.64      0.64        70
 [[13 11  0]
  [ 6 22  4]
  [ 0  4 10]]
-----------Testing With Fields (File 1 (C)): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT']
+----------Testing With Fields (File 1 (C): BIG): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT']
 Computing Results.......
 Best Parameters:  {'solver': 'adam', 'hidden_layer_sizes': (100, 100), 'alpha': 0.0001, 'activation': 'logistic'}
 Best Training Score:  0.6269036894036893
 Accuracy: 0.7857142857142857
               precision    recall  f1-score   support
 
-          AD       0.77      0.88      0.82        26
-         MCI       0.64      0.64      0.64        25
          SCD       0.93      0.82      0.87        33
+         MCI       0.64      0.64      0.64        25
+          AD       0.77      0.88      0.82        26
 
     accuracy                           0.79        84
    macro avg       0.78      0.78      0.78        84
@@ -52,16 +52,16 @@ weighted avg       0.79      0.79      0.79        84
 [[27  6  0]
  [ 2 16  7]
  [ 0  3 23]]
-----------Testing With Fields (File 1 (C)): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT', 'ABETA','PTAU','TAU']
+----------Testing With Fields (File 1 (C): SMALL): ['DX', 'PLASMA_NFL', 'PLASMATAU', 'AB4240', 'MMSE', 'AGE', 'PTEDUCAT', 'ABETA','PTAU','TAU']
 Computing Results.......
 Best Parameters:  {'solver': 'adam', 'hidden_layer_sizes': (50, 50), 'alpha': 0.05, 'activation': 'logistic'}
 Best Training Score:  0.5900900900900901
 Accuracy: 0.6785714285714286
               precision    recall  f1-score   support
 
-          AD       0.77      0.83      0.80        12
-         MCI       0.68      0.68      0.68        28
          SCD       0.60      0.56      0.58        16
+         MCI       0.68      0.68      0.68        28
+          AD       0.77      0.83      0.80        12
 
     accuracy                           0.68        56
    macro avg       0.68      0.69      0.69        56
@@ -70,16 +70,16 @@ weighted avg       0.68      0.68      0.68        56
 [[ 9  7  0]
  [ 6 19  3]
  [ 0  2 10]]
-----------Testing With Fields (File 2 (U)): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','ABETA','PTAU','TAU','MMSE','PTEDUCAT','AGE','PTGENDER']
+----------Testing With Fields (File 2 (U): SMALL): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','ABETA','PTAU','TAU','MMSE','PTEDUCAT','AGE','PTGENDER']
 Computing Results.......
 Best Parameters:  {'solver': 'adam', 'hidden_layer_sizes': (100, 100), 'alpha': 0.05, 'activation': 'logistic'}
 Best Training Score:  0.5364622142740556
 Accuracy: 0.6434782608695652
               precision    recall  f1-score   support
 
-          AD       0.76      0.69      0.72        42
-         MCI       0.62      0.75      0.68       114
          SCD       0.62      0.46      0.53        74
+         MCI       0.62      0.75      0.68       114
+          AD       0.76      0.69      0.72        42
 
     accuracy                           0.64       230
    macro avg       0.67      0.63      0.64       230
@@ -88,16 +88,16 @@ weighted avg       0.65      0.64      0.64       230
 [[34 39  1]
  [21 85  8]
  [ 0 13 29]]
-----------Testing With Fields (File 2 (U)): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','MMSE','PTEDUCAT','AGE','PTGENDER']
+----------Testing With Fields (File 2 (U): BIG): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','MMSE','PTEDUCAT','AGE','PTGENDER']
 Computing Results.......
 Best Parameters:  {'solver': 'adam', 'hidden_layer_sizes': (5, 10), 'alpha': 0.05, 'activation': 'logistic'}
 Best Training Score:  0.5922099073564872
 Accuracy: 0.683982683982684
               precision    recall  f1-score   support
 
-          AD       0.74      0.74      0.74        34
-         MCI       0.67      0.74      0.70       118
          SCD       0.68      0.58      0.63        79
+         MCI       0.67      0.74      0.70       118
+          AD       0.74      0.74      0.74        34
 
     accuracy                           0.68       231
    macro avg       0.70      0.68      0.69       231
@@ -106,16 +106,16 @@ weighted avg       0.68      0.68      0.68       231
 [[46 33  0]
  [22 87  9]
  [ 0  9 25]]
-----------Testing With Fields (File 2 (C)): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','ABETA','PTAU','TAU','MMSE','PTEDUCAT','AGE','PTGENDER']
+----------Testing With Fields (File 2 (C): SMALL): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','ABETA','PTAU','TAU','MMSE','PTEDUCAT','AGE','PTGENDER']
 Computing Results.......
 Best Parameters:  {'solver': 'adam', 'hidden_layer_sizes': (100,), 'alpha': 0.0001, 'activation': 'logistic'}
 Best Training Score:  0.5857206012378425
 Accuracy: 0.6989795918367347
               precision    recall  f1-score   support
 
-          AD       0.85      0.74      0.79        31
-         MCI       0.72      0.71      0.72       105
          SCD       0.60      0.65      0.62        60
+         MCI       0.72      0.71      0.72       105
+          AD       0.85      0.74      0.79        31
 
     accuracy                           0.70       196
    macro avg       0.72      0.70      0.71       196
@@ -124,16 +124,16 @@ weighted avg       0.70      0.70      0.70       196
 [[39 21  0]
  [26 75  4]
  [ 0  8 23]]
-----------Testing With Fields (File 2 (C)): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','MMSE','PTEDUCAT','AGE','PTGENDER']
+----------Testing With Fields (File 2 (C): BIG): ['DX','PLASMA_NFL','PLAMAPTAU181','AB4240','MMSE','PTEDUCAT','AGE','PTGENDER']
 Computing Results.......
 Best Parameters:  {'solver': 'adam', 'hidden_layer_sizes': (100, 100), 'alpha': 0.0001, 'activation': 'logistic'}
 Best Training Score:  0.6254277441431956
 Accuracy: 0.7309644670050761
               precision    recall  f1-score   support
 
-          AD       0.89      0.71      0.79        34
-         MCI       0.72      0.77      0.74       100
          SCD       0.68      0.68      0.68        63
+         MCI       0.72      0.77      0.74       100
+          AD       0.89      0.71      0.79        34
 
     accuracy                           0.73       197
    macro avg       0.76      0.72      0.74       197
